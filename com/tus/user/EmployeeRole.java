@@ -10,10 +10,9 @@
  *******************************************************************************
  *----------------------------------------------------------------------------*/
 
-package com.tus.classes;
+package com.tus.user;
 
-public enum UserTypesEnum {
-    REGULAR,
-    EMPLOYEE,
-    ADMIN;
+public interface EmployeeRole {
+
+    public void createUser(User user);
 }

@@ -10,17 +10,23 @@
  *******************************************************************************
  *----------------------------------------------------------------------------*/
 
-package com.tus.classes;
+package com.tus.user;
 
-import java.util.Date;
+public class AdminUser extends User implements AdminRole, EmployeeRole{
 
-public class Megazine extends Item{
-
-    public Megazine(final String name, final Date publishedDate, final int id, final int totalUnits, final int availableUnits) {
-        super(name, publishedDate, id, totalUnits, availableUnits);
+    public AdminUser(final int id, final String username, final String name, final String password, final UserTypesEnum userType) {
+        super(id, username, name, password, userType);
     }
 
-    public Megazine(final String name, final Date publishedDate, final int totalUnits, final int availableUnits) {
-        super(name, publishedDate, totalUnits, availableUnits);
+    public AdminUser(final String username, final String name, final String password, final UserTypesEnum userType) {
+        super(username, name, password, userType);
+    }
+
+    public void deleteUser(final User user) {
+        //Remove user from db
+    }
+
+    public void createUser(final User user) {
+        //Add user to the db
     }
 }
