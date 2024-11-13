@@ -10,10 +10,7 @@
  *******************************************************************************
  *----------------------------------------------------------------------------*/
 
-package com.tus.dataaccess;
+package com.tus.exceptions;
 
-
-public class DAO {
-
-    public Object getUser(Strin)
+public class UserNotFound extends Exception{
 }
