@@ -50,4 +50,8 @@ public class Item {
         }
         return false;
     }
+
+    public String getName(){
+        return name;
+    }
 }

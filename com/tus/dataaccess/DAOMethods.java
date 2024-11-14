@@ -24,14 +24,14 @@ import com.tus.user.User;
 
 public interface DAOMethods {
 
-    public Object getUser(String username) throws UserNotFound;
-    public Object saveUser(User user) throws UserAlreadyExists;
-    public Object updateUser(User user) throws UserNotFound;
-    public Object removeUser(String username) throws UserNotFound;
+    public User getUser(String username) throws UserNotFound;
+    public void saveUser(User user) throws UserAlreadyExists;
+    public void updateUser(User user) throws UserNotFound;
+    public void removeUser(String username) throws UserNotFound;
 
-    public boolean getItem(String id) throws ItemDoesntExist;
+    public Item getItem(String id) throws ItemDoesntExist;
     public boolean saveItem(Item item) throws ItemAlreadyExists;
-    public boolean saveItem(Collection<Item> items) throws ItemAlreadyExists;
+    public boolean saveItems(Collection<Item> items) throws ItemAlreadyExists;
     public boolean updateItem(Item item) throws ItemDoesntExist;
     public boolean removeItem(Item item) throws ItemDoesntExist;
 }

@@ -12,7 +12,16 @@
 
 package com.tus.user;
 
-public interface AdminRole {
+public class EmployeeUser extends User implements EmployeeRole{
+    public EmployeeUser(final int id, final String username, final String name, final String password, final UserTypesEnum userType) {
+        super(id, username, name, password, userType);
+    }
 
-    public void deleteAUser(User user);
+    public EmployeeUser(final String username, final String name, final String password, final UserTypesEnum userType) {
+        super(username, name, password, userType);
+    }
+
+    public void createAUser(final User user) {
+
+    }
 }

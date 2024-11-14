@@ -14,5 +14,7 @@ package com.tus.user;
 
 public interface EmployeeRole {
 
-    public void createUser(User user);
+    public void createAUser(User user);
+
+    public void updateAUserPassword(String username, String newPassword);
 }
