@@ -14,7 +14,7 @@ package com.tus.user;
 
 import com.tus.exceptions.UserNotFound;
 
-public class AdminUser extends User implements AdminRole, EmployeeRole{
+public class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole{
 
     public AdminUser(final int id, final String username, final String name, final String password, final UserTypesEnum userType) {
         super(id, username, name, password, userType);

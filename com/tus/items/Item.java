@@ -18,17 +18,8 @@ public class Item {
 
     private String name;
     private Date publishedDate;
-    private int id;
     private int totalUnits = 0;
     private int availableUnits = 0;
-
-    public Item(String name, Date publishedDate,int id, int totalUnits, int availableUnits){
-        this.id = id;
-        this.name = name;
-        this.publishedDate = publishedDate;
-        this.availableUnits = availableUnits;
-        this.totalUnits = totalUnits;
-    }
 
     public Item(String name, Date publishedDate, int totalUnits, int availableUnits){
         this.name = name;
@@ -53,5 +44,17 @@ public class Item {
 
     public String getName(){
         return name;
+    }
+
+    public Date getPublishedDate() {
+        return publishedDate;
+    }
+
+    public int getTotalUnits() {
+        return totalUnits;
+    }
+
+    public int getAvailableUnits() {
+        return availableUnits;
     }
 }

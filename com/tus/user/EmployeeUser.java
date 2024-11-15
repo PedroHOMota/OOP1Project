@@ -12,7 +12,7 @@
 
 package com.tus.user;
 
-public class EmployeeUser extends User implements EmployeeRole{
+public class EmployeeUser extends User implements EmployeeRole, InventoryMgmtRole{
     public EmployeeUser(final int id, final String username, final String name, final String password, final UserTypesEnum userType) {
         super(id, username, name, password, userType);
     }
