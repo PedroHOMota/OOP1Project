@@ -20,8 +20,4 @@ public class EmployeeUser extends User implements EmployeeRole{
     public EmployeeUser(final String username, final String name, final String password, final UserTypesEnum userType) {
         super(username, name, password, userType);
     }
-
-    public void createAUser(final User user) {
-
-    }
 }

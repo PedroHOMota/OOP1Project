@@ -12,9 +12,31 @@
 
 package com.tus.user;
 
+import com.tus.dataaccess.DAOFactory;
+import com.tus.dataaccess.DAOMethods;
+
 public interface EmployeeRole {
 
-    public void createAUser(User user);
+    DAOMethods dao = DAOFactory.getDaoInstance();
 
-    public void updateAUserPassword(String username, String newPassword);
+    public default void createAUser(String username, String name, String password, UserTypesEnum userType) throws Exception{
+        if(userType == UserTypesEnum.ADMIN) {
+            return;
+        }
+        if(userType == UserTypesEnum.EMPLOYEE){
+            EmployeeUser employeeUser = new EmployeeUser(username,name,password,userType);
+            dao.saveUser(employeeUser);
+        } else {
+            RegularUser employeeUser = new RegularUser(username,name,password,userType);
+            dao.saveUser(employeeUser);
+        }
+    }
+
+    public default void updateAUserPassword(String username, String newPassword) throws Exception{
+        final User user = dao.getUser(username);
+
+        user.resetPassword(newPassword);
+
+        dao.updateUser(user);
+    }
 }

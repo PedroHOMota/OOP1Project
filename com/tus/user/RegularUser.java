@@ -38,4 +38,9 @@ public class RegularUser extends User{
     private void checkOverdue(){
 
     }
+
+    @Override
+    public String toString() {
+        return "RegularUser{" + "borrowedItems=" + borrowedItems + '}';
+    }
 }

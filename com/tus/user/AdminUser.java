@@ -12,8 +12,7 @@
 
 package com.tus.user;
 
-import com.tus.dataaccess.DAO;
-import com.tus.dataaccess.DAOFactory;
+import com.tus.exceptions.UserNotFound;
 
 public class AdminUser extends User implements AdminRole, EmployeeRole{
 
@@ -25,11 +24,21 @@ public class AdminUser extends User implements AdminRole, EmployeeRole{
         super(username, name, password, userType);
     }
 
-    public void deleteAUser(final User user) {
-        //Remove user from db
+    public void createAUser(String username, String name, String password, UserTypesEnum userType) throws Exception{
+        if(userType == UserTypesEnum.ADMIN) {
+            AdminUser adminUser = new AdminUser(username,name,password,userType);
+            dao.saveUser(adminUser);
+        }
+        if(userType == UserTypesEnum.EMPLOYEE){
+            EmployeeUser employeeUser = new EmployeeUser(username,name,password,userType);
+            dao.saveUser(employeeUser);
+        } else {
+            RegularUser regularUser = new RegularUser(username,name,password,userType);
+            dao.saveUser(regularUser);
+        }
     }
 
-    public void createAUser(final User user) {
-        //Add user to the db
+    public void deleteAUser(final User user) throws UserNotFound {
+        dao.removeUser(user.getUsername());
     }
 }

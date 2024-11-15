@@ -58,9 +58,9 @@ public class DAO implements DAOMethods{
     }
 
     public boolean saveItem(final Item item) throws ItemAlreadyExists {
-        if(!this.items.add(item))
+        if(!items.add(item))
             throw new ItemAlreadyExists();
-        
+
         return false;
     }
 
@@ -80,10 +80,18 @@ public class DAO implements DAOMethods{
     }
 
     public boolean updateItem(final Item item) throws ItemDoesntExist {
+        if(!items.remove(item)) {
+            throw new ItemDoesntExist();
+        }
+        items.add(item);
         return false;
     }
 
     public boolean removeItem(final Item item) throws ItemDoesntExist {
+        if(users.remove(item)){
+            throw new ItemDoesntExist();
+        }
+
         return false;
     }
 }
