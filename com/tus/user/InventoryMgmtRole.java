@@ -17,6 +17,7 @@ import java.util.HashSet;
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
 import com.tus.items.Book;
+import com.tus.items.Cd;
 import com.tus.items.Game;
 import com.tus.items.Item;
 
@@ -48,22 +49,22 @@ public interface InventoryMgmtRole {
 
             return copy;
         }
-//        else if (item.getClass() == Game.class) {
-//            Game copy = new Game(
-//                item.getName(),
-//                item.getPublishedDate(),
-//                item.getTotalUnits(),
-//                item.getAvailableUnits(),
-//                ((Game) item).getPlatform());
-//
-//            return copy;
-//        }
-        else {
-            Game copy = new Game(item.getName(),
+        else if (item.getClass() == Game.class) {
+            Game copy = new Game(
+                item.getName(),
                 item.getPublishedDate(),
                 item.getTotalUnits(),
                 item.getAvailableUnits(),
                 ((Game) item).getPlatform());
+
+            return copy;
+        }
+        else {
+            Cd copy = new Cd(item.getName(),
+                item.getPublishedDate(),
+                item.getTotalUnits(),
+                item.getAvailableUnits(),
+                ((Cd) item).getArtist());
 
             return copy;
         }

@@ -14,13 +14,15 @@ package com.tus.items;
 
 import java.util.Date;
 
-public class Magazine extends Item{
+public class Cd extends Item{
+    private String artist;
 
-    public Magazine(final String name, final Date publishedDate, final int id, final int totalUnits, final int availableUnits) {
-        super(name, publishedDate, id, totalUnits, availableUnits);
+    public Cd(final String name, final Date publishedDate, final int totalUnits, final int availableUnits, final String artist) {
+        super(name, publishedDate, totalUnits, availableUnits);
+        this.artist = artist;
     }
 
-    public Magazine(final String name, final Date publishedDate, final int totalUnits, final int availableUnits) {
-        super(name, publishedDate, totalUnits, availableUnits);
+    public String getArtist() {
+        return artist;
     }
 }

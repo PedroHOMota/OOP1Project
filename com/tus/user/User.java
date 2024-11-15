@@ -18,14 +18,6 @@ public class User {
     private String password;
     private UserTypesEnum userType;
 
-    public User(final int id, final String username, final String name, final String password, final UserTypesEnum userType) {
-        //this.id = id;
-        this.username = username;
-        this.name = name;
-        this.password = password;
-        this.userType = userType;
-    }
-
     public User(final String username, final String name, final String password, final UserTypesEnum userType) {
         this.username = username;
         this.name = name;
