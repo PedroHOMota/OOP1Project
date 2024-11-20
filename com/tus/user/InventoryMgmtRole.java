@@ -16,6 +16,8 @@ import java.util.HashSet;
 
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
+import com.tus.exceptions.ItemAlreadyExists;
+import com.tus.exceptions.ItemDoesntExist;
 import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.Game;
@@ -24,18 +26,18 @@ import com.tus.items.Item;
 public interface InventoryMgmtRole {
     final DAO inventoryDao = DAOFactory.getDaoInstance();
 
-    public default void addItem(Item item){
+    public default void addItem(Item item) throws ItemAlreadyExists {
         inventoryDao.saveItem(makeCopyOf(item));
     }
 
-    public default void addItems(HashSet<Item> items){
+    public default void addItems(HashSet<Item> items) throws ItemAlreadyExists {
         inventoryDao.saveItems(makeCopyOf(items));
     }
 
-    public default void removeItem(Item item){
+    public default void removeItem(Item item) throws ItemDoesntExist {
         inventoryDao.removeItem(makeCopyOf(item));
     }
-    public default void updateItem(Item item){
+    public default void updateItem(Item item) throws ItemDoesntExist {
         inventoryDao.updateItem(makeCopyOf(item));
     }
 

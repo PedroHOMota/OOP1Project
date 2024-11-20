@@ -15,16 +15,18 @@ package com.tus.user;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.DataFormatException;
 
+import com.tus.dataaccess.DAO;
+import com.tus.dataaccess.DAOFactory;
 import com.tus.items.Item;
 
 public class RegularUser extends User{
-    private HashMap<Item,Date> borrowedItems = new HashMap<Item, Date>();
+    final private DAO dao = DAOFactory.getDaoInstance();
 
-    public RegularUser(final int id, final String username, final String name, final String password, final UserTypesEnum userType) {
-        super(id, username, name, password, userType);
-    }
+    private HashMap<Item,Date> borrowedItems = new HashMap<Item, Date>();
 
     public RegularUser(final String username, final String name, final String password, final UserTypesEnum userType) {
         super(username, name, password, userType);
@@ -39,8 +41,19 @@ public class RegularUser extends User{
 
     }
 
+    private Set<Item> listAll(){
+        return dao.getAllItems();
+    }
+
     @Override
     public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Username: "+getUsername());
+        for (var a: borrowedItems) {
+
+        }
+        builder.append(borrowedItems.)
+        builder.indexOf("Username: {}")
         return "RegularUser{" + "borrowedItems=" + borrowedItems + '}';
     }
 }

@@ -15,6 +15,7 @@ package com.tus.dataaccess;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.tus.exceptions.ItemAlreadyExists;
@@ -53,8 +54,24 @@ public class DAO implements DAOMethods{
         users.remove(getUser(username));
     }
 
-    public Item getItem(final String id) throws ItemDoesntExist {
-        return null;
+    public Set<User> getAllUsersOfType(Class userClass){
+        return users.stream().filter(user -> user.getClass().equals(userClass)).collect(Collectors.toSet());
+    }
+
+    public Set<User> getAllUsers(){
+        return users;
+    }
+
+    public Item getItem(final String itemName) throws ItemDoesntExist {
+        return  items.stream().filter(item -> item.getName().equals(itemName)).findFirst().orElseThrow(() -> new ItemDoesntExist() );
+    }
+
+    public Set<Item> getAllItemsOfType(Class itemClass){
+        return items.stream().filter(item -> item.getClass().equals(itemClass)).collect(Collectors.toSet());
+    }
+
+    public Set<Item> getAllItems(){
+        return items;
     }
 
     public boolean saveItem(final Item item) throws ItemAlreadyExists {

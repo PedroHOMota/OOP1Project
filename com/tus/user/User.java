@@ -36,4 +36,9 @@ public class User {
     public String getUsername(){
         return username;
     }
+
+    public boolean validatePassword(String password){
+        return password.equals(this.password);
+    }
+
 }
