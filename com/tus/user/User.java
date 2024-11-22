@@ -41,4 +41,7 @@ public class User {
         return password.equals(this.password);
     }
 
+    public String toString(){
+        return "Username: "+username+"\nUserType: "+userType.toString();
+    }
 }

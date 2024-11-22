@@ -29,6 +29,7 @@ public class MenuForUser {
     public static void MenuForUser(EmployeeUser employeeUser){
 
     }
+
     public static void MenuForUser(RegularUser regularUser){
         String op = "";
         Boolean keepRunning = true;
@@ -45,6 +46,7 @@ public class MenuForUser {
 
             switch (op) {
                 case "1": {
+
                 }
                 case "2": {
                 }
@@ -60,6 +62,15 @@ public class MenuForUser {
                 }
             }
         }
+    }
 
+    private Object subMenu(StringBuilder builder, Enum options){
+        for (var op: options
+             ) {
+
+        }
+        System.out.println(builder.toString());
+        final String op = SCANNER.nextLine();
+        return options.
     }
 }

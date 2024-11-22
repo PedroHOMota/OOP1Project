@@ -12,18 +12,24 @@
 
 package com.tus.user;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.DataFormatException;
 
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
 import com.tus.items.Item;
 
-public class RegularUser extends User{
+public class RegularUser extends User implements RegularUserRole{
     final private DAO dao = DAOFactory.getDaoInstance();
 
     private HashMap<Item,Date> borrowedItems = new HashMap<Item, Date>();
@@ -33,27 +39,38 @@ public class RegularUser extends User{
     }
 
 
-    private void borrowItem(Item item, Date returnDate){
+    public void borrowItem(Item item) throws Exception{
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        final Date returnDate = dateFormat.parse(dateFormat.format(LocalDateTime.now().plusDays(7)));
         borrowedItems.put(item,returnDate);
     }
 
-    private void checkOverdue(){
+    public List checkOverdue() throws Exception{
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        final Date today = dateFormat.parse(dateFormat.format(LocalDateTime.now()));
+        final List<Map.Entry<Item, Date>> entries = borrowedItems.entrySet().stream().filter(entry -> {
+            return entry.getValue().compareTo(today) > 0;
+        }).toList();
 
+        return entries;
     }
 
-    private Set<Item> listAll(){
-        return dao.getAllItems();
+    public void returnItem(Item item){
+        borrowedItems.remove(item);
     }
+
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Username: "+getUsername());
-        for (var a: borrowedItems) {
-
+        builder.append("Borrowed items: {");
+        for (var item: borrowedItems.entrySet()) {
+            builder.append("name: "+item.getKey());
+            builder.append("due date: "+item.getValue());
         }
-        builder.append(borrowedItems.)
-        builder.indexOf("Username: {}")
-        return "RegularUser{" + "borrowedItems=" + borrowedItems + '}';
+        builder.append("}");
+
+        return builder.toString();       //return "RegularUser{" + "borrowedItems=" + borrowedItems + '}';
     }
 }
