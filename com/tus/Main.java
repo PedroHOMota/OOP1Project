@@ -5,9 +5,12 @@
 
 package com.tus;
 
+import com.tus.gui.LoginMenu;
+
 public class Main {
 
     public static void main(String[] args) {
+        new LoginMenu();
         System.out.println("tst");
     }
 }

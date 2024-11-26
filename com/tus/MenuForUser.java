@@ -34,6 +34,7 @@ public class MenuForUser {
         String op = "";
         Boolean keepRunning = true;
 
+
         while(true) {
             System.out.println("********MAIN MENU***********");
             System.out.println("1-Borrow item");
@@ -65,12 +66,13 @@ public class MenuForUser {
     }
 
     private Object subMenu(StringBuilder builder, Enum options){
-        for (var op: options
-             ) {
-
-        }
-        System.out.println(builder.toString());
-        final String op = SCANNER.nextLine();
-        return options.
+//        for (var op: options
+//             ) {
+//
+//        }
+//        System.out.println(builder.toString());
+//        final String op = SCANNER.nextLine();
+//        return options.
+        return null;
     }
 }
