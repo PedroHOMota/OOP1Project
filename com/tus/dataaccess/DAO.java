@@ -37,9 +37,16 @@ public class DAO implements DAOMethods{
     }
 
     public void saveUser(final User user) throws UserAlreadyExists {
-        if(!users.add(user)){
-            throw new UserAlreadyExists();
+        try {
+            if(getUser(user.getUsername()) != null){
+                throw new UserAlreadyExists();
+            }
+        } catch (UserNotFound e) {
+            if(!users.add(user)){
+                throw new UserAlreadyExists();
+            }
         }
+
     }
 
     public void updateUser(final User user) throws UserNotFound {

@@ -12,8 +12,48 @@
 
 package com.tus.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class RegularUserMenu {
+import com.tus.user.User;
+
+public class RegularUserMenu extends JFrame{
     private JPanel regularUserMenuPanel;
+    private JButton borrowBtn;
+    private JButton borrowItemButton;
+    private JButton listItemsButton;
+    private JButton checkMyBorrowedItemsButton;
+
+    public RegularUserMenu(){
+        setTitle("Regular");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(400,300);
+        setVisible(true);
+        setContentPane(regularUserMenuPanel);
+        borrowBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                LoginMenu menu = new LoginMenu();
+            }
+        });
+    }
+
+    public RegularUserMenu(User user){
+        setTitle("Regular");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(400,300);
+        setVisible(true);
+        setContentPane(regularUserMenuPanel);
+        borrowBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                new LoginMenu();
+            }
+        });
+    }
+
+    public JPanel getRegularUserMenuPanel() {
+        return regularUserMenuPanel;
+    }
 }

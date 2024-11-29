@@ -15,13 +15,13 @@ package com.tus.items;
 import java.util.Date;
 
 public class Book extends Item {
-    public String getAuthor() {
-        return author;
-    }
-
     private String author;
     public Book(final String name, final Date publishedDate, final int totalUnits, final int availableUnits, final String author) {
         super(name, publishedDate, totalUnits, availableUnits);
         this.author = author;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 }

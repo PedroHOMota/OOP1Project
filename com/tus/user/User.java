@@ -14,6 +14,15 @@ package com.tus.user;
 
 public class User {
     private String username;
+
+    public String getName() {
+        return name;
+    }
+
+    public UserTypesEnum getUserType() {
+        return userType;
+    }
+
     private String name;
     private String password;
     private UserTypesEnum userType;

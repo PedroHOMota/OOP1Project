@@ -14,6 +14,8 @@ package com.tus.dataaccess;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.tus.exceptions.ItemAlreadyExists;
 import com.tus.exceptions.ItemDoesntExist;
@@ -28,10 +30,14 @@ public interface DAOMethods {
     public void saveUser(User user) throws UserAlreadyExists;
     public void updateUser(User user) throws UserNotFound;
     public void removeUser(String username) throws UserNotFound;
+    public Set<User> getAllUsersOfType(Class userClass);
+    public Set<User> getAllUsers();
 
     public Item getItem(String id) throws ItemDoesntExist;
     public boolean saveItem(Item item) throws ItemAlreadyExists;
     public boolean saveItems(Collection<Item> items) throws ItemAlreadyExists;
     public boolean updateItem(Item item) throws ItemDoesntExist;
     public boolean removeItem(Item item) throws ItemDoesntExist;
+    public Set<Item> getAllItemsOfType(Class userClass);
+    public Set<Item> getAllItems();
 }

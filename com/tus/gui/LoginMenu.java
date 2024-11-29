@@ -19,7 +19,9 @@ import javax.swing.*;
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
 import com.tus.exceptions.UserNotFound;
+import com.tus.user.EmployeeRole;
 import com.tus.user.User;
+import com.tus.user.UserTypesEnum;
 
 public class LoginMenu extends JFrame {
 
@@ -30,9 +32,9 @@ public class LoginMenu extends JFrame {
     private JLabel usernameLbl;
     private JTextField passwordField;
     private JButton loginBtn;
+    private JPanel LoginPanel;
 
     public LoginMenu(){
-        User user = null;
         setTitle("User login");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400,300);
@@ -42,11 +44,13 @@ public class LoginMenu extends JFrame {
         loginBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                User tuser = loginUser(usernameField.getText(),passwordField.getText());
-                if(tuser == null){
-                    JOptionPane.showMessageDialog(LoginMenu.this,"equas Username not found");
-                } else {
-                    JOptionPane.showMessageDialog(LoginMenu.this,"Username not found");
+                final User tempUser = loginUser(usernameField.getText(),passwordField.getText());
+                if(tempUser != null){
+                    setVisible(false);
+                    if(tempUser.getUserType() == UserTypesEnum.REGULAR)
+                        new RegularUserMenu(tempUser);
+                    else
+                        new EmployeeAdminUserMenu((EmployeeRole) tempUser);
                 }
             }
         });
@@ -55,17 +59,15 @@ public class LoginMenu extends JFrame {
     private User loginUser(String username, String password){
         try{
             final User user = dao.getUser(username);
-            if(user.validatePassword(username)){
+            if(user.validatePassword(password)){
                 return user;
             } else {
-                //Alert wrong password
+                JOptionPane.showMessageDialog(LoginMenu.this,"Wrong password");
+                return null;
             }
 
         }catch (UserNotFound userNotFound){
-            //Alert user doest exist
-            System.out.println("user doesnt exist");
-        }
-        finally {
+            JOptionPane.showMessageDialog(LoginMenu.this,"User not found");
             return null;
         }
     }

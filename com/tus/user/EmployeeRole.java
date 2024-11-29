@@ -12,8 +12,11 @@
 
 package com.tus.user;
 
+import java.util.Set;
+
 import com.tus.dataaccess.DAOFactory;
 import com.tus.dataaccess.DAOMethods;
+import com.tus.items.Item;
 
 public interface EmployeeRole {
 
@@ -39,4 +42,22 @@ public interface EmployeeRole {
 
         dao.updateUser(user);
     }
+
+    public default Set<User> listAllUsersOfType(Class userClass){
+        return dao.getAllUsersOfType(userClass);
+    }
+
+    public default Set<User> listAllUsers(){
+        return dao.getAllUsers();
+    }
+
+    public default Set<Item> listAllItemsOfType(Class userClass){
+        return dao.getAllItemsOfType(userClass);
+    }
+
+    public default Set<Item> listAllItems(){
+        return dao.getAllItems();
+    }
+
+
 }
