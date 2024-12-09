@@ -34,14 +34,22 @@ public interface InventoryMgmtRole {
         inventoryDao.saveItems(makeCopyOf(items));
     }
 
-    public default void removeItem(Item item) throws ItemDoesntExist {
-        inventoryDao.removeItem(makeCopyOf(item));
+    public default void removeItem(String itemName) throws ItemDoesntExist {
+        Item item = inventoryDao.getItem(itemName);
+        inventoryDao.removeItem(item);
     }
     public default void updateItem(Item item) throws ItemDoesntExist {
         inventoryDao.updateItem(makeCopyOf(item));
     }
 
-    private Item makeCopyOf(Item item){
+    public default void changeTotalNumberOfItemUnits(String itemName, int amount) throws Exception{
+        final Item item = inventoryDao.getItem(itemName);
+        item.changeAmountOfUnits(amount);
+        inventoryDao.updateItem(item);
+    }
+
+
+        private Item makeCopyOf(Item item){
         if(item.getClass() == Book.class){
             Book copy = new Book(item.getName(),
                 item.getPublishedDate(),

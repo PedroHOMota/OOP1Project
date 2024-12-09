@@ -28,16 +28,17 @@ public interface DAOMethods {
 
     public User getUser(String username) throws UserNotFound;
     public void saveUser(User user) throws UserAlreadyExists;
-    public void updateUser(User user) throws UserNotFound;
+    public void updateUser(User user) throws UserNotFound, UserAlreadyExists;
     public void removeUser(String username) throws UserNotFound;
+    public void removeUser(User user) throws UserNotFound;
     public Set<User> getAllUsersOfType(Class userClass);
     public Set<User> getAllUsers();
 
     public Item getItem(String id) throws ItemDoesntExist;
     public boolean saveItem(Item item) throws ItemAlreadyExists;
     public boolean saveItems(Collection<Item> items) throws ItemAlreadyExists;
-    public boolean updateItem(Item item) throws ItemDoesntExist;
-    public boolean removeItem(Item item) throws ItemDoesntExist;
+    public void updateItem(Item item) throws ItemDoesntExist;
+    public void removeItem(Item item) throws ItemDoesntExist;
     public Set<Item> getAllItemsOfType(Class userClass);
     public Set<Item> getAllItems();
 }

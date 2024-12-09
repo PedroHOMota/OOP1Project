@@ -16,5 +16,5 @@ import com.tus.exceptions.UserNotFound;
 
 public interface AdminRole {
 
-    public void deleteAUser(User user) throws UserNotFound;
+    public void deleteAUser(final String userName) throws UserNotFound;
 }

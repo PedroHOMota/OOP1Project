@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import com.tus.user.EmployeeRole;
+import com.tus.user.RegularUserRole;
 import com.tus.user.User;
 
 public class EmployeeAdminUserMenu extends JFrame{
@@ -60,7 +61,7 @@ public class EmployeeAdminUserMenu extends JFrame{
             @Override
             public void actionPerformed(final ActionEvent e) {
                 setVisible(false);
-                new ListView(user.listAllItems(),true,(User) user);
+                new ListViewItems(((RegularUserRole)user).getAllItems(),(User) user);
             }
         });
 
@@ -68,7 +69,7 @@ public class EmployeeAdminUserMenu extends JFrame{
             @Override
             public void actionPerformed(final ActionEvent e) {
                 setVisible(false);
-                new ListView(user.listAllUsers(),false,(User) user);
+                new ListViewUsers(user.getAllUsers(),(User) user);
             }
         });
     }

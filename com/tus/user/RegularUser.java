@@ -17,21 +17,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.DataFormatException;
-
-import com.tus.dataaccess.DAO;
-import com.tus.dataaccess.DAOFactory;
 import com.tus.items.Item;
 
 public class RegularUser extends User implements RegularUserRole{
-    final private DAO dao = DAOFactory.getDaoInstance();
-
     private HashMap<Item,Date> borrowedItems = new HashMap<Item, Date>();
 
     public RegularUser(final String username, final String name, final String password, final UserTypesEnum userType) {
@@ -39,10 +29,18 @@ public class RegularUser extends User implements RegularUserRole{
     }
 
 
-    public void borrowItem(Item item) throws Exception{
+    public void borrowItem(String itemName) throws Exception{
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         final Date returnDate = dateFormat.parse(dateFormat.format(LocalDateTime.now().plusDays(7)));
-        borrowedItems.put(item,returnDate);
+        final Item item = regularUserDao.getItem(itemName);
+
+        if(item.getAvailableUnits() > 0){
+            regularUserDao.updateItem(item);
+            borrowedItems.put(item,returnDate);
+        }
+        else {
+            throw new Exception(); //Update ex
+        }
     }
 
     public List checkOverdue() throws Exception{
@@ -71,6 +69,6 @@ public class RegularUser extends User implements RegularUserRole{
         }
         builder.append("}");
 
-        return builder.toString();       //return "RegularUser{" + "borrowedItems=" + borrowedItems + '}';
+        return builder.toString();
     }
 }

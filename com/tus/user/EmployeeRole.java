@@ -16,15 +16,16 @@ import java.util.Set;
 
 import com.tus.dataaccess.DAOFactory;
 import com.tus.dataaccess.DAOMethods;
-import com.tus.items.Item;
+import com.tus.exceptions.UserNotFound;
 
 public interface EmployeeRole {
 
     DAOMethods dao = DAOFactory.getDaoInstance();
 
-    public default void createAUser(String username, String name, String password, UserTypesEnum userType) throws Exception{
+    //TODO update exception
+    public default void createAUser(final String username, final String name, final String password, final UserTypesEnum userType) throws Exception{
         if(userType == UserTypesEnum.ADMIN) {
-            return;
+            throw new Exception();
         }
         if(userType == UserTypesEnum.EMPLOYEE){
             EmployeeUser employeeUser = new EmployeeUser(username,name,password,userType);
@@ -35,7 +36,7 @@ public interface EmployeeRole {
         }
     }
 
-    public default void updateAUserPassword(String username, String newPassword) throws Exception{
+    public default void updateAUserPassword(final String username, final String newPassword) throws Exception{
         final User user = dao.getUser(username);
 
         user.resetPassword(newPassword);
@@ -43,21 +44,15 @@ public interface EmployeeRole {
         dao.updateUser(user);
     }
 
-    public default Set<User> listAllUsersOfType(Class userClass){
+    public default Set<User> getAllUsersOfType(final Class userClass){
         return dao.getAllUsersOfType(userClass);
     }
 
-    public default Set<User> listAllUsers(){
+    public default Set<User> getAllUsers(){
         return dao.getAllUsers();
     }
 
-    public default Set<Item> listAllItemsOfType(Class userClass){
-        return dao.getAllItemsOfType(userClass);
+    public default User getUser(String username) throws UserNotFound {
+        return dao.getUser(username);
     }
-
-    public default Set<Item> listAllItems(){
-        return dao.getAllItems();
-    }
-
-
 }

@@ -22,6 +22,7 @@ import com.tus.exceptions.ItemAlreadyExists;
 import com.tus.exceptions.ItemDoesntExist;
 import com.tus.exceptions.UserAlreadyExists;
 import com.tus.exceptions.UserNotFound;
+import com.tus.items.Book;
 import com.tus.items.Item;
 import com.tus.user.User;
 
@@ -31,7 +32,7 @@ public class DAO implements DAOMethods{
     private HashSet<Item> items = new HashSet<Item>();
 
     public User getUser(final String username) throws UserNotFound {
-        final User aUser = users.stream().filter(user -> user.getUsername().equals(username)).findFirst().orElseThrow(() -> new UserNotFound() );
+        final User aUser = users.stream().filter(user -> user.getUsername().equals(username)).findFirst().orElseThrow(() -> new UserNotFound());
 
         return aUser;
     }
@@ -49,19 +50,24 @@ public class DAO implements DAOMethods{
 
     }
 
-    public void updateUser(final User user) throws UserNotFound {
-        if(users.remove(user)){
-            users.add(user);
+    public void updateUser(final User user) throws UserNotFound, UserAlreadyExists {
+        removeUser(user);
+        if(!users.add(user)){
+            throw new UserAlreadyExists();
         }
-
-        throw new UserNotFound();
     }
 
     public void removeUser(final String username) throws UserNotFound {
         users.remove(getUser(username));
     }
 
-    public Set<User> getAllUsersOfType(Class userClass){
+    public void removeUser(final User user) throws UserNotFound {
+        if(!users.remove(user)){
+            throw new UserNotFound();
+        }
+    }
+
+    public Set<User> getAllUsersOfType(final Class userClass){
         return users.stream().filter(user -> user.getClass().equals(userClass)).collect(Collectors.toSet());
     }
 
@@ -73,7 +79,7 @@ public class DAO implements DAOMethods{
         return  items.stream().filter(item -> item.getName().equals(itemName)).findFirst().orElseThrow(() -> new ItemDoesntExist() );
     }
 
-    public Set<Item> getAllItemsOfType(Class itemClass){
+    public Set<Item> getAllItemsOfType(final Class itemClass){
         return items.stream().filter(item -> item.getClass().equals(itemClass)).collect(Collectors.toSet());
     }
 
@@ -103,19 +109,16 @@ public class DAO implements DAOMethods{
         return false;
     }
 
-    public boolean updateItem(final Item item) throws ItemDoesntExist {
+    public void updateItem(final Item item) throws ItemDoesntExist {
         if(!items.remove(item)) {
             throw new ItemDoesntExist();
         }
         items.add(item);
-        return false;
     }
 
-    public boolean removeItem(final Item item) throws ItemDoesntExist {
-        if(users.remove(item)){
+    public void removeItem(final Item item) throws ItemDoesntExist {
+        if(!items.remove(item)){
             throw new ItemDoesntExist();
         }
-
-        return false;
     }
 }

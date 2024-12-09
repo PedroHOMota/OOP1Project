@@ -23,15 +23,17 @@ import com.tus.items.Item;
 public interface RegularUserRole {
     final DAO regularUserDao = DAOFactory.getDaoInstance();
 
-    public default Set<Item> listAll(){
+    public default Set<Item> getAllItems(){
         return regularUserDao.getAllItems();
     }
 
-    public default Set<Item> listAllOfType(Class itemClass){
+    public default Set<Item> getAllOfType(Class itemClass){
         return regularUserDao.getAllItemsOfType(itemClass);
     }
 
     public default Item getItem(String name) throws ItemDoesntExist {
         return regularUserDao.getItem(name);
     }
+
+    public void borrowItem(String itemName) throws Exception;
 }

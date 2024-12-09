@@ -14,13 +14,14 @@ package com.tus.user;
 
 import com.tus.exceptions.UserNotFound;
 
-public class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole{
+public class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole, RegularUserRole{
 
     public AdminUser(final String username, final String name, final String password, final UserTypesEnum userType) {
         super(username, name, password, userType);
     }
 
-    public void createAUser(String username, String name, String password, UserTypesEnum userType) throws Exception{
+    @Override
+    public void createAUser(final String username, final String name, final String password, final UserTypesEnum userType) throws Exception{
         if(userType == UserTypesEnum.ADMIN) {
             AdminUser adminUser = new AdminUser(username,name,password,userType);
             dao.saveUser(adminUser);
@@ -34,7 +35,16 @@ public class AdminUser extends User implements AdminRole, EmployeeRole, Inventor
         }
     }
 
+    public void deleteAUser(final String userName) throws UserNotFound {
+        dao.removeUser(userName);
+    }
+
     public void deleteAUser(final User user) throws UserNotFound {
-        dao.removeUser(user.getUsername());
+        dao.removeUser(user);
+    }
+
+    @Override
+    public void borrowItem(final String itemName) throws Exception {
+        throw new Exception();
     }
 }

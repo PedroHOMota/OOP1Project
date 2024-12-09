@@ -28,12 +28,21 @@ public class Item {
         this.totalUnits = totalUnits;
     }
 
-    public void increaseUnitsBy(int amount){
-        totalUnits += amount;
-        availableUnits += amount;
+    public void changeAmountOfUnits(int newTotalUnits) throws Exception{
+        if (availableUnits > newTotalUnits) {
+            throw new Exception(); //Change ex
+            //Cant let update cause number of borrowed units would be bigger than total of available units
+        }
+
+        if(newTotalUnits > totalUnits){
+            availableUnits += (newTotalUnits - totalUnits);
+        } else {
+            availableUnits += (totalUnits - newTotalUnits);
+        }// get the difference between the new total
+        //and either increases or decreses the number of availavbleUnits
+        totalUnits = newTotalUnits;
     }
 
-    //Check db first instead of going by field
     public boolean borrowUnit(){
         if(availableUnits > 0){
             availableUnits--;
@@ -57,4 +66,5 @@ public class Item {
     public int getAvailableUnits() {
         return availableUnits;
     }
+
 }
