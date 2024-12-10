@@ -42,15 +42,15 @@ public class GuiUtil {
             for (Item item : tempSet) {
                 if(item.getClass() == Game.class){
                     Game game = (Game) item;
-                    model.addRow(new Object[] {game.getName(), game.getPublishedDate(),game.getPlatform(),
+                    model.addRow(new Object[] {game.getName(), game.getCreationDate(),game.getPlatform(),
                         game.getAvailableUnits(),game.getTotalUnits()});
                 } else if(item.getClass() == Book.class){
                     Book book = (Book) item;
-                    model.addRow(new Object[] {book.getName(), book.getPublishedDate(),book.getAuthor(),
+                    model.addRow(new Object[] {book.getName(), book.getCreationDate(),book.getAuthor(),
                         book.getAvailableUnits(),book.getTotalUnits()});
                 } else {
                     Cd cd = (Cd) item;
-                    model.addRow(new Object[] {cd.getName(), cd.getPublishedDate(),cd.getArtist(),
+                    model.addRow(new Object[] {cd.getName(), cd.getCreationDate(),cd.getArtist(),
                         cd.getAvailableUnits(),cd.getTotalUnits()});
                 }
             }
@@ -69,15 +69,15 @@ public class GuiUtil {
             for (Item item : tempSet) {
                 if(item.getClass() == Game.class){
                     Game game = (Game) item;
-                    model.addRow(new Object[] {game.getName(), game.getPublishedDate(),game.getPlatform(),
+                    model.addRow(new Object[] {game.getName(), game.getCreationDate(),game.getPlatform(),
                         game.getAvailableUnits(),game.getTotalUnits()});
                 } else if(item.getClass() == Book.class){
                     Book book = (Book) item;
-                    model.addRow(new Object[] {book.getName(), book.getPublishedDate(),book.getAuthor(),
+                    model.addRow(new Object[] {book.getName(), book.getCreationDate(),book.getAuthor(),
                         book.getAvailableUnits(),book.getTotalUnits()});
                 } else {
                     Cd cd = (Cd) item;
-                    model.addRow(new Object[] {cd.getName(), cd.getPublishedDate(),cd.getArtist(),
+                    model.addRow(new Object[] {cd.getName(), cd.getCreationDate(),cd.getArtist(),
                         cd.getAvailableUnits(),cd.getTotalUnits()});
                 }
             }
@@ -106,6 +106,19 @@ public class GuiUtil {
                 frame.setVisible(false);
                 new EmployeeAdminUserMenu((EmployeeRole) user);
             };
+        }
+    }
+
+    static ActionListener exitButtonAction(final JFrame frame){
+        return ActionEvent -> {
+            frame.setVisible(false);
+            new LoginMenu();
+        };
+    }
+
+    static void verifyField(JTextField... fields) throws Exception{
+        for (JTextField field:fields) {
+            if(field.getText().isEmpty()) throw new Exception();
         }
     }
 }

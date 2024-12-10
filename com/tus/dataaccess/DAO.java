@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.tus.exceptions.FailedToSave;
 import com.tus.exceptions.ItemAlreadyExists;
 import com.tus.exceptions.ItemDoesntExist;
 import com.tus.exceptions.UserAlreadyExists;
@@ -50,10 +51,10 @@ public class DAO implements DAOMethods{
 
     }
 
-    public void updateUser(final User user) throws UserNotFound, UserAlreadyExists {
+    public void updateUser(final User user) throws FailedToSave,UserNotFound {
         removeUser(user);
         if(!users.add(user)){
-            throw new UserAlreadyExists();
+            throw new FailedToSave();
         }
     }
 

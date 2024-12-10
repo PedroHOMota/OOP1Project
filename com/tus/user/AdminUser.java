@@ -12,6 +12,7 @@
 
 package com.tus.user;
 
+import com.tus.exceptions.UserAlreadyExists;
 import com.tus.exceptions.UserNotFound;
 
 public class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole, RegularUserRole{
@@ -21,7 +22,7 @@ public class AdminUser extends User implements AdminRole, EmployeeRole, Inventor
     }
 
     @Override
-    public void createAUser(final String username, final String name, final String password, final UserTypesEnum userType) throws Exception{
+    public void createAUser(final String username, final String name, final String password, final UserTypesEnum userType) throws UserAlreadyExists {
         if(userType == UserTypesEnum.ADMIN) {
             AdminUser adminUser = new AdminUser(username,name,password,userType);
             dao.saveUser(adminUser);

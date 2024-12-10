@@ -12,9 +12,9 @@
 
 package com.tus.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
+
+import static com.tus.gui.GuiUtil.exitButtonAction;
 
 import com.tus.user.EmployeeRole;
 import com.tus.user.RegularUserRole;
@@ -22,8 +22,6 @@ import com.tus.user.User;
 
 public class EmployeeAdminUserMenu extends JFrame{
     private JButton createNewUserButton;
-    private JButton deleteItemButton;
-    private JButton deleteUserButton;
     private JButton listAllItemsButton;
     private JPanel employeeAdminPanel;
     private JButton exitButton;
@@ -31,46 +29,27 @@ public class EmployeeAdminUserMenu extends JFrame{
     private JButton listAllUsersButton;
 
     public EmployeeAdminUserMenu(EmployeeRole user){
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400,300);
         setVisible(true);
         setContentPane(employeeAdminPanel);
-        createNewUserButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
 
-            }
+        createNewUserButton.addActionListener(ActionEvent -> {
+            setVisible(false);
         });
 
-        createNewUserButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
+        exitButton.addActionListener(exitButtonAction(this));
 
-            }
+        listAllItemsButton.addActionListener(ActionEvent -> {
+            setVisible(false);
+            new ListViewItems(((RegularUserRole) user).getAllItems(), (User) user);
         });
 
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                setVisible(true);
-                new LoginMenu();
-            }
-        });
 
-        listAllItemsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                setVisible(false);
-                new ListViewItems(((RegularUserRole)user).getAllItems(),(User) user);
-            }
-        });
-
-        listAllUsersButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                setVisible(false);
-                new ListViewUsers(user.getAllUsers(),(User) user);
-            }
+        listAllUsersButton.addActionListener(ActionEvent -> {
+            setVisible(false);
+            new ListViewUsers(user.getAllUsers(),(User) user);
         });
     }
 }

@@ -52,7 +52,7 @@ public interface InventoryMgmtRole {
         private Item makeCopyOf(Item item){
         if(item.getClass() == Book.class){
             Book copy = new Book(item.getName(),
-                item.getPublishedDate(),
+                item.getCreationDate(),
                 item.getTotalUnits(),
                 item.getAvailableUnits(),
                 ((Book) item).getAuthor());
@@ -62,7 +62,7 @@ public interface InventoryMgmtRole {
         else if (item.getClass() == Game.class) {
             Game copy = new Game(
                 item.getName(),
-                item.getPublishedDate(),
+                item.getCreationDate(),
                 item.getTotalUnits(),
                 item.getAvailableUnits(),
                 ((Game) item).getPlatform());
@@ -71,7 +71,7 @@ public interface InventoryMgmtRole {
         }
         else {
             Cd copy = new Cd(item.getName(),
-                item.getPublishedDate(),
+                item.getCreationDate(),
                 item.getTotalUnits(),
                 item.getAvailableUnits(),
                 ((Cd) item).getArtist());

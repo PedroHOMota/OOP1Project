@@ -10,18 +10,7 @@
  *******************************************************************************
  *----------------------------------------------------------------------------*/
 
-package com.tus.items;
+package com.tus.exceptions;
 
-import java.util.Date;
-
-public class Game extends Item{
-    private GamePlatforms platform;
-    public Game(final String name, final String publishedDate, final int totalUnits, final int availableUnits, final GamePlatforms platform, final ItemTypeEnum itemTypeEnum) {
-        super(name, publishedDate, totalUnits, availableUnits,itemTypeEnum);
-        this.platform = platform;
-    }
-
-    public GamePlatforms getPlatform() {
-        return platform;
-    }
+public class NotSupportedException extends Exception{
 }

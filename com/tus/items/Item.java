@@ -17,15 +17,17 @@ import java.util.Date;
 public class Item {
 
     private String name;
-    private Date publishedDate;
+    private String creationDate;
     private int totalUnits = 0;
     private int availableUnits = 0;
+    private ItemTypeEnum itemType = null;
 
-    public Item(String name, Date publishedDate, int totalUnits, int availableUnits){
+    public Item(String name, String publishedDate, int totalUnits, int availableUnits, ItemTypeEnum typeEnum){
         this.name = name;
-        this.publishedDate = publishedDate;
+        this.creationDate = publishedDate;
         this.availableUnits = availableUnits;
         this.totalUnits = totalUnits;
+        itemType = typeEnum;
     }
 
     public void changeAmountOfUnits(int newTotalUnits) throws Exception{
@@ -55,8 +57,8 @@ public class Item {
         return name;
     }
 
-    public Date getPublishedDate() {
-        return publishedDate;
+    public String getCreationDate() {
+        return creationDate;
     }
 
     public int getTotalUnits() {
@@ -67,4 +69,19 @@ public class Item {
         return availableUnits;
     }
 
+    public ItemTypeEnum getItemType() {
+        return itemType;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setCreationDate(final String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setTotalUnits(final int totalUnits) {
+        this.totalUnits = totalUnits;
+    }
 }

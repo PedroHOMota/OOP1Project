@@ -34,13 +34,15 @@ public class User {
         this.userType = userType;
     }
 
-    public void resetPassword(String newPassword){
+    public void setPassword(String newPassword){
         password = newPassword;
     }
 
-    public void resetUsername(String newUsername){
+    public void setUsername(String newUsername){
         username = newUsername;
     }
+
+    public void setName(String newName){ name = newName; }
 
     public String getUsername(){
         return username;

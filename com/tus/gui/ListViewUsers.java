@@ -12,6 +12,7 @@
 
 package com.tus.gui;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,7 @@ import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
 import com.tus.exceptions.UserNotFound;
 import com.tus.user.AdminUser;
+import com.tus.user.EmployeeRole;
 import com.tus.user.EmployeeUser;
 import com.tus.user.RegularUser;
 import com.tus.user.User;
@@ -63,22 +65,31 @@ public class ListViewUsers extends JFrame{
             AdminUser temp = (AdminUser) user;
             try {
                 final User userToDelete = temp.getUser(userName);
-                if(userToDelete == user) {
-                    JOptionPane.showMessageDialog(ListViewUsers.this,"Can not delete own user");
+                if (userToDelete == user) {
+                    JOptionPane.showMessageDialog(ListViewUsers.this, "Can not delete own user");
                 } else {
                     temp.deleteAUser(userName);
                     clearTable(model);
                     populateTable(false, temp.getAllUsers(), model);
+
                 }
-            } catch (UserNotFound ex) {
-                JOptionPane.showMessageDialog(ListViewUsers.this,"User doesnt exist; nothing to delete.");
+            } catch(UserNotFound ex) {
+                JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to delete.");
                 ex.printStackTrace();
             }
         });
 
-        updateUserButton.addActionListener(ActionListener ->  {
+        updateUserButton.addActionListener(ActionListener -> {
+            setVisible(false);
             final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
-            AdminUser temp = (AdminUser) user;
+            EmployeeRole temp = (EmployeeRole) user;
+            try {
+                final User userToUpdate = temp.getUser(userName);
+                new CreateUpdateUserView(this, user, userToUpdate);
+            } catch (UserNotFound e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to update.");
+            }
         });
     }
 
@@ -86,10 +97,10 @@ public class ListViewUsers extends JFrame{
     private void PopulateTableAndFilterBoxForUsers(Set data, UserTypesEnum currentUserType) {
 
         if(currentUserType == UserTypesEnum.ADMIN)
-            filterComboBox.addItem("Admin");
+            filterComboBox.addItem(UserTypesEnum.ADMIN);
 
-        filterComboBox.addItem("Regular");
-        filterComboBox.addItem("Employee");
+        filterComboBox.addItem(UserTypesEnum.REGULAR);
+        filterComboBox.addItem(UserTypesEnum.EMPLOYEE);
         filterComboBox.addItem("All");
 
         HashSet<User> mySet = (HashSet<User>) data;
@@ -98,7 +109,6 @@ public class ListViewUsers extends JFrame{
         model.addColumn("User Type");
 
         populateTable(false,mySet,model,currentUserType);
-
     }
 
 
@@ -106,19 +116,20 @@ public class ListViewUsers extends JFrame{
         return actionEvent -> {
             clearTable(model);
 
-            final String selection = filterComboBox.getSelectedItem().toString();
+            final UserTypesEnum selection = (UserTypesEnum) filterComboBox.getSelectedItem();//.toString();
             Set<User> allUsersOfType = null;
 
+
             switch (selection){
-                case "Admin":{
+                case ADMIN:{
                     allUsersOfType = dao.getAllUsersOfType(AdminUser.class);
                     break;
                 }
-                case "Regular":{
+                case REGULAR:{
                     allUsersOfType = dao.getAllUsersOfType(RegularUser.class);
                     break;
                 }
-                case "Employee": {
+                case EMPLOYEE: {
                     allUsersOfType = dao.getAllUsersOfType(EmployeeUser.class);
                     break;
                 }
