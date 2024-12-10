@@ -13,6 +13,7 @@ import com.tus.gui.CreateUpdateUserView;
 import com.tus.gui.ListViewItems;
 import com.tus.gui.ListViewUsers;
 import com.tus.gui.LoginMenu;
+import com.tus.gui.RegularUserMenu;
 import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.ItemTypeEnum;
@@ -47,8 +48,9 @@ public class Main {
         createSampleData();
         DAO dao = DAOFactory.getDaoInstance();
 
+        new RegularUserMenu(dao.getUser("regular"));
         //new ListViewUsers(dao.getAllUsers(),dao.getUser("employee"));
-        new CreateUpdateUserView(null,dao.getUser("employee"));
+        //new CreateUpdateUserView(null,dao.getUser("employee"));
         //new ListViewUsers();
         //new ListViewItems(dao.getAllItems(),dao.getUser("admin"));
         //new LoginMenu();

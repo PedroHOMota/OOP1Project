@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 import static com.tus.gui.GuiUtil.backButtonAction;
 import static com.tus.gui.GuiUtil.clearTable;
@@ -31,9 +30,6 @@ import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.Game;
 import com.tus.items.Item;
-import com.tus.user.AdminUser;
-import com.tus.user.EmployeeRole;
-import com.tus.user.EmployeeUser;
 import com.tus.user.InventoryMgmtRole;
 import com.tus.user.RegularUser;
 import com.tus.user.RegularUserRole;
@@ -48,67 +44,25 @@ public class ListViewItems extends JFrame{
     private JTable infoTable;
     private JComboBox filterComboBox;
     private JButton filterButton;
-    private JButton increaseQuantityButton;
-    private JTextField increaseQuantityTextField;
+    private JButton updateItemButton;
     private DAO dao = DAOFactory.getDaoInstance();
     private DefaultTableModel model = (DefaultTableModel) infoTable.getModel();
 
-    public ListViewItems(){
-        setVisible(true);
-        setSize(500, 200);
-        setContentPane(mainPanel);
-
-        String[][] data = {
-            { "Kundan Kumar Jha", "4031", "CSE" },
-            { "Anand Jha", "6014", "IT" }
-        };
-
-        //infoTable = new JTable(data,columnNames);
-        TableColumn column = new TableColumn(0);
-        TableColumn column2 = new TableColumn(1);
-        TableColumn column3 = new TableColumn(2);
-        column3.setHeaderValue("Test3");
-        column2.setHeaderValue("Test2");
-        column.setHeaderValue("Test1");
-
-
-        infoTable.setShowGrid(true);
-        var model = (DefaultTableModel) infoTable.getModel();
-        model.addColumn("column");
-        model.addColumn("column2");
-        model.addColumn("column3");
-
-        model.addRow(data[0]);
-        model.addRow(data[1]);
-
-        backButton.addActionListener(actionEvent -> {
-
-        });
-
-        increaseQuantityButton.addActionListener(actionEvent -> {
-            try {
-                JOptionPane.showMessageDialog(ListViewItems.this,infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString());
-                final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
-                //RegularUser temp = (RegularUser) user;
-                //temp.borrowItem(itemName);
-            } catch (ArrayIndexOutOfBoundsException ex){
-                JOptionPane.showMessageDialog(ListViewItems.this,"Please select an item to borrow");
-            } catch (Exception ex){
-                JOptionPane.showMessageDialog(ListViewItems.this,"No available units to borrow");
-            }
-        });
-
-    }
-
-    public void UpdateTableAndFilters(Set set, boolean isItem, User user){
-
-    }
     public ListViewItems(Set set, User user){
         infoTable.setShowGrid(true);
         setVisible(true);
         setSize(500, 200);
         setContentPane(mainPanel);
 
+        if(user.getUserType() == UserTypesEnum.REGULAR){
+            deleteItemButton.setVisible(false);
+            deleteItemButton.setEnabled(false);
+            updateItemButton.setEnabled(false);
+            deleteItemButton.setVisible(false);
+        } else {
+            borrowItemButton.setVisible(false);
+            borrowItemButton.setEnabled(false);
+        }
 
         PopulateTableAndFilterBoxForItems(user,set);
         filterButton.addActionListener(FilterForItems(user,set));
@@ -117,23 +71,9 @@ public class ListViewItems extends JFrame{
 
         borrowItemButton.addActionListener(actionEvent -> {
             try {
-                JOptionPane.showMessageDialog(ListViewItems.this,infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString());
                 final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
                 RegularUser temp = (RegularUser) user;
                 temp.borrowItem(itemName);
-            } catch (ArrayIndexOutOfBoundsException ex){
-                JOptionPane.showMessageDialog(ListViewItems.this,"Please select an item to borrow");
-            } catch (Exception ex){
-                JOptionPane.showMessageDialog(ListViewItems.this,"No available units to borrow");
-            }
-        });
-
-        increaseQuantityButton.addActionListener(actionEvent -> {
-            try {
-                final String quantity = increaseQuantityTextField.getText();
-                final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
-                InventoryMgmtRole temp = (InventoryMgmtRole) user;
-                temp.changeTotalNumberOfItemUnits(itemName,Integer.parseInt(quantity));
             } catch (ArrayIndexOutOfBoundsException ex){
                 JOptionPane.showMessageDialog(ListViewItems.this,"Please select an item to borrow");
             } catch (Exception ex){
@@ -153,6 +93,18 @@ public class ListViewItems extends JFrame{
                 JOptionPane.showMessageDialog(ListViewItems.this,"Item doesnt exist; nothing to delete.");
                 ex.printStackTrace();
             }
+        });
+
+        updateItemButton.addActionListener(e -> {
+            final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
+            Item itemToUpdate = null;
+            try {
+                itemToUpdate = (Item) set.stream().filter(item -> ((Item) item).getName().equals(itemName)).findFirst().get();
+
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(ListViewItems.this,"Failed to retrieve item.");
+            }
+            new CreateUpdateItemView(this,itemToUpdate,user);
         });
     }
 

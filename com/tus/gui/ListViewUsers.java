@@ -42,6 +42,7 @@ public class ListViewUsers extends JFrame{
     private JComboBox filterComboBox;
     private JButton filterButton;
     private JButton updateUserButton;
+    private JButton listBorrowedItemsButton;
     private DAO dao = DAOFactory.getDaoInstance();
     private DefaultTableModel model = (DefaultTableModel) infoTable.getModel();
 
@@ -79,16 +80,33 @@ public class ListViewUsers extends JFrame{
             }
         });
 
-        updateUserButton.addActionListener(ActionListener -> {
+        updateUserButton.addActionListener(e -> {
             setVisible(false);
             final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
             EmployeeRole temp = (EmployeeRole) user;
             try {
                 final User userToUpdate = temp.getUser(userName);
                 new CreateUpdateUserView(this, user, userToUpdate);
-            } catch (UserNotFound e) {
-                e.printStackTrace();
+            } catch (UserNotFound ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to update.");
+            }
+        });
+
+        listBorrowedItemsButton.addActionListener(e -> {
+            if (user.getUserType() != UserTypesEnum.REGULAR) {
+                JOptionPane.showMessageDialog(ListViewUsers.this, "User cant borrow anything");
+            } else {
+                setVisible(false);
+                final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
+                EmployeeRole temp = (EmployeeRole) user;
+                try {
+                    final User userToList = temp.getUser(userName);
+                    new ViewBorrowedItems(this, userToList);
+                } catch (UserNotFound ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to update.");
+                }
             }
         });
     }

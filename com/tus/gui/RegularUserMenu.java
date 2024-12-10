@@ -18,6 +18,7 @@ import javax.swing.*;
 
 import static com.tus.gui.GuiUtil.exitButtonAction;
 
+import com.tus.user.RegularUser;
 import com.tus.user.User;
 
 public class RegularUserMenu extends JFrame{
@@ -25,16 +26,6 @@ public class RegularUserMenu extends JFrame{
     private JButton listItemsButton;
     private JButton checkMyBorrowedItemsButton;
     private JButton exitButton;
-
-    public RegularUserMenu(){
-        setTitle("Regular");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(400,300);
-        setVisible(true);
-        setContentPane(regularUserMenuPanel);
-
-
-    }
 
     public RegularUserMenu(User user){
         setTitle("Regular");
@@ -46,6 +37,13 @@ public class RegularUserMenu extends JFrame{
 
         exitButton.addActionListener(exitButtonAction(this));
 
+        checkMyBorrowedItemsButton.addActionListener(e -> {
+            new ViewBorrowedItems(this,user);
+        });
+
+        listItemsButton.addActionListener(e ->{
+            new ListViewItems(((RegularUser) user).getAllItems(),user);
+        });
     }
 
 }

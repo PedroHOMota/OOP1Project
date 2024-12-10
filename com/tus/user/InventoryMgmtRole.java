@@ -55,7 +55,8 @@ public interface InventoryMgmtRole {
                 item.getCreationDate(),
                 item.getTotalUnits(),
                 item.getAvailableUnits(),
-                ((Book) item).getAuthor());
+                ((Book) item).getAuthor(),
+                item.getItemType());
 
             return copy;
         }
@@ -65,7 +66,8 @@ public interface InventoryMgmtRole {
                 item.getCreationDate(),
                 item.getTotalUnits(),
                 item.getAvailableUnits(),
-                ((Game) item).getPlatform());
+                ((Game) item).getPlatform(),
+                item.getItemType());
 
             return copy;
         }
@@ -74,7 +76,8 @@ public interface InventoryMgmtRole {
                 item.getCreationDate(),
                 item.getTotalUnits(),
                 item.getAvailableUnits(),
-                ((Cd) item).getArtist());
+                ((Cd) item).getArtist(),
+                item.getItemType());
 
             return copy;
         }

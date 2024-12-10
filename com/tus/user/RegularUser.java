@@ -19,10 +19,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.tus.exceptions.ItemDoesntExist;
+import com.tus.exceptions.NoAvailableUnits;
 import com.tus.items.Item;
 
 public class RegularUser extends User implements RegularUserRole{
-    private HashMap<Item,Date> borrowedItems = new HashMap<Item, Date>();
+    private HashMap<Item,LocalDateTime> borrowedItems = new HashMap<Item, LocalDateTime>();
 
     public RegularUser(final String username, final String name, final String password, final UserTypesEnum userType) {
         super(username, name, password, userType);
@@ -30,8 +33,8 @@ public class RegularUser extends User implements RegularUserRole{
 
 
     public void borrowItem(String itemName) throws Exception{
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        final Date returnDate = dateFormat.parse(dateFormat.format(LocalDateTime.now().plusDays(7)));
+        final LocalDateTime returnDate = LocalDateTime.now().plusDays(7);
+
         final Item item = regularUserDao.getItem(itemName);
 
         if(item.getAvailableUnits() > 0){
@@ -39,24 +42,30 @@ public class RegularUser extends User implements RegularUserRole{
             borrowedItems.put(item,returnDate);
         }
         else {
-            throw new Exception(); //Update ex
+            throw new NoAvailableUnits();
         }
     }
 
     public List checkOverdue() throws Exception{
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         final Date today = dateFormat.parse(dateFormat.format(LocalDateTime.now()));
-        final List<Map.Entry<Item, Date>> entries = borrowedItems.entrySet().stream().filter(entry -> {
-            return entry.getValue().compareTo(today) > 0;
+        final LocalDateTime now = LocalDateTime.now();
+        final List<Map.Entry<Item, LocalDateTime>> entries = borrowedItems.entrySet().stream().filter(entry -> {
+            return entry.getValue().compareTo(now) > 0;
         }).toList();
 
         return entries;
     }
 
-    public void returnItem(Item item){
+    public void returnItem(Item item) throws ItemDoesntExist {
+        item.returnUnit();
+        regularUserDao.updateItem(item);
         borrowedItems.remove(item);
     }
 
+    public HashMap<Item, LocalDateTime> getBorrowedItems() {
+        return borrowedItems;
+    }
 
     @Override
     public String toString() {

@@ -53,6 +53,10 @@ public class Item {
         return false;
     }
 
+    public void returnUnit(){
+        availableUnits++;
+    }
+
     public String getName(){
         return name;
     }
