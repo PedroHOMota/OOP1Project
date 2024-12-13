@@ -14,7 +14,7 @@ package com.tus.user;
 
 import com.tus.exceptions.UserNotFound;
 
-public interface AdminRole {
+public sealed interface AdminRole permits AdminUser{
 
     public void deleteAUser(final String userName) throws UserNotFound;
 }

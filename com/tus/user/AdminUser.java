@@ -16,7 +16,7 @@ import com.tus.exceptions.UserAlreadyExists;
 import com.tus.exceptions.UserNotFound;
 import com.tus.items.ItemTypeEnum;
 
-public class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole, RegularUserRole{
+public final class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole, RegularUserRole{
 
     public AdminUser(final String username, final String name, final String password, final UserTypesEnum userType) {
         super(username, name, password, userType);

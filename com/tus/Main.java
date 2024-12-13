@@ -30,14 +30,12 @@ public class Main {
     private static void createSampleData(){
         DAO dao = DAOFactory.getDaoInstance();
         AdminUser admin = new AdminUser("admin","administrator","pass", UserTypesEnum.ADMIN);
-        AdminUser admin2 = new AdminUser("admina","administrator","pass", UserTypesEnum.ADMIN);
         User employee = new EmployeeUser("employee","AnEmployee","pass",UserTypesEnum.EMPLOYEE);
         User regularUser = new RegularUser("regular","AnUser","pass",UserTypesEnum.REGULAR);
         Book book = new Book("aBook","01/01/2001",10,10,"aAuthor",ItemTypeEnum.BOOK);
         Cd cd=new Cd("And Justice for All","01/01/2001",10,10,"Metallica", ItemTypeEnum.CD);
         try {
             dao.saveUser(admin);
-            dao.saveUser(admin2);
             dao.saveUser(employee);
             dao.saveUser(regularUser);
             dao.saveItem(book);

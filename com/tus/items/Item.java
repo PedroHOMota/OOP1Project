@@ -14,7 +14,7 @@ package com.tus.items;
 
 import java.util.Date;
 
-public class Item {
+public abstract class Item {
 
     private String name;
     private String creationDate;

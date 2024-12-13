@@ -12,7 +12,7 @@
 
 package com.tus.user;
 
-public class User {
+public abstract class User {
     private String username;
 
     public String getName() {
