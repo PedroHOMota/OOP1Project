@@ -11,9 +11,11 @@ public class RegularUserMenu extends JFrame{
     private JButton listItemsButton;
     private JButton checkMyBorrowedItemsButton;
     private JButton exitButton;
+    private JLabel welcomeLabel;
 
     public RegularUserMenu(User user){
-        setTitle("Regular");
+        welcomeLabel.setText("Welcome: "+user.getUsername());
+        welcomeLabel.setSize(100,20);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400,300);
         setVisible(true);

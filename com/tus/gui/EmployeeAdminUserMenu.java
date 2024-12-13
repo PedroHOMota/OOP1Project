@@ -13,11 +13,14 @@ public class EmployeeAdminUserMenu extends JFrame{
     private JButton exitButton;
     private JButton createNewItemButton;
     private JButton listAllUsersButton;
+    private JLabel welcomeLabel;
 
     public EmployeeAdminUserMenu(User user){
 
+        welcomeLabel.setText("Welcome: "+user.getUsername());
+        welcomeLabel.setSize(100,20);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-            setSize(400,300);
+        setSize(400,300);
         setVisible(true);
         setContentPane(employeeAdminPanel);
 

@@ -37,29 +37,21 @@ public class ViewBorrowedItems extends JFrame {
         model.addColumn("Overdue");
 
 
-        backButton.addActionListener(e -> {
-            backButtonAction(loggedUser,previousFrame);
-        });
-
         RegularUser regularUser = (RegularUser) loggedUser;
         clearTable(model);
 
         populateTable(regularUser.getBorrowedItems().entrySet(),regularUser.checkOverdue());
 
-        final Set<Map.Entry<Item, LocalDateTime>> entries = regularUser.getBorrowedItems().entrySet();
         returnItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final String itemName = itemTable.getValueAt(itemTable.getSelectedRow(), 0).toString();
-                RegularUser temp = (RegularUser) loggedUser;
-                final Optional<Item> itemToReturn = temp.getBorrowedItems().keySet().stream().filter(item -> item.getName().equals(itemName)).findFirst();
-
                 try {
+                    final String itemName = itemTable.getValueAt(itemTable.getSelectedRow(), 0).toString();
+                    final Optional<Item> itemToReturn = regularUser.getBorrowedItems().keySet().stream().filter(item -> item.getName().equals(itemName)).findFirst();
                     if (!itemToReturn.isEmpty()) {
-                        temp.returnItem(itemToReturn.get());
+                        regularUser.returnItem(itemToReturn.get());
                         clearTable(model);
                         populateTable(regularUser.getBorrowedItems().entrySet(),regularUser.checkOverdue());
-                        final List overdueItems = regularUser.checkOverdue();
                     }
                 } catch (ItemNotFound ex){
                     JOptionPane.showMessageDialog(ViewBorrowedItems.this,"Failed to return item");
@@ -67,12 +59,63 @@ public class ViewBorrowedItems extends JFrame {
                 } catch (FailedToSave ex){
                     JOptionPane.showMessageDialog(ViewBorrowedItems.this,"Failed to return item");
                     ex.printStackTrace();
+                } catch (ArrayIndexOutOfBoundsException ex){
+                    JOptionPane.showMessageDialog(ViewBorrowedItems.this,"Please select an item first");
+                    ex.printStackTrace();
+                } catch (Exception ex){
+                    JOptionPane.showMessageDialog(ViewBorrowedItems.this,"General Error");
+                    ex.printStackTrace();
                 }
             }
         });
 
 
         backButton.addActionListener(backButtonAction(loggedUser,this));
+    }
+
+    public ViewBorrowedItems(JFrame previousFrame, User loggedUser, User userToList){
+        setContentPane(mainPanel);
+        setVisible(true);
+        setSize(500, 200);
+        model.addColumn("Name");
+        model.addColumn("Due Date");
+        model.addColumn("Type");
+        model.addColumn("Overdue");
+
+
+        RegularUser regularUser = (RegularUser) userToList;
+        clearTable(model);
+
+        populateTable(regularUser.getBorrowedItems().entrySet(),regularUser.checkOverdue());
+
+        returnItemButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                try {
+                    final String itemName = itemTable.getValueAt(itemTable.getSelectedRow(), 0).toString();
+                    final Optional<Item> itemToReturn = regularUser.getBorrowedItems().keySet().stream().filter(item -> item.getName().equals(itemName)).findFirst();
+                    if (!itemToReturn.isEmpty()) {
+                        regularUser.returnItem(itemToReturn.get());
+                        clearTable(model);
+                        populateTable(regularUser.getBorrowedItems().entrySet(),regularUser.checkOverdue());
+                    }
+                } catch (ItemNotFound ex){
+                    JOptionPane.showMessageDialog(ViewBorrowedItems.this,"Failed to return item");
+                    ex.printStackTrace();
+                } catch (FailedToSave ex){
+                    JOptionPane.showMessageDialog(ViewBorrowedItems.this,"Failed to return item");
+                    ex.printStackTrace();
+                } catch (ArrayIndexOutOfBoundsException ex){
+                    JOptionPane.showMessageDialog(ViewBorrowedItems.this,"Please select an item first");
+                    ex.printStackTrace();
+                } catch (Exception ex){
+                    JOptionPane.showMessageDialog(ViewBorrowedItems.this,"General Error");
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        backButton.addActionListener(e -> GuiUtil.switchActiveFrame(ViewBorrowedItems.this,previousFrame));
     }
 
     private void populateTable(Set<Map.Entry<Item, LocalDateTime>> itemsSet, List overdueItems){

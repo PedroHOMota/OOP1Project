@@ -98,7 +98,7 @@ public class ListViewUsers extends JFrame{
                     JOptionPane.showMessageDialog(ListViewUsers.this, "User cant borrow anything");
                 }else {
                     setVisible(false);
-                    new ViewBorrowedItems(ListViewUsers.this, userToList);
+                    new ViewBorrowedItems(ListViewUsers.this, user, userToList);
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
                 ex.printStackTrace();
@@ -133,21 +133,26 @@ public class ListViewUsers extends JFrame{
     private ActionListener FilterForUsers(User user, Set data){
         return actionEvent -> {
             clearTable(model);
+            String selection;
+            try {
+                selection = filterComboBox.getSelectedItem().toString();
+            } catch (Exception e){
+                selection = "0";
+            }
 
-            final UserTypesEnum selection = (UserTypesEnum) filterComboBox.getSelectedItem();//.toString();
             Set<User> allUsersOfType = null;
 
 
             switch (selection){
-                case ADMIN:{
+                case "ADMIN":{
                     allUsersOfType = dao.getAllUsersOfType(AdminUser.class);
                     break;
                 }
-                case REGULAR:{
+                case "REGULAR":{
                     allUsersOfType = dao.getAllUsersOfType(RegularUser.class);
                     break;
                 }
-                case EMPLOYEE: {
+                case "EMPLOYEE": {
                     allUsersOfType = dao.getAllUsersOfType(EmployeeUser.class);
                     break;
                 }
