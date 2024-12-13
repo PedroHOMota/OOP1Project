@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 
 import com.tus.exceptions.FailedToSave;
 import com.tus.exceptions.ItemAlreadyExists;
-import com.tus.exceptions.ItemDoesntExist;
+import com.tus.exceptions.ItemNotFound;
 import com.tus.exceptions.UserAlreadyExists;
 import com.tus.exceptions.UserNotFound;
-import com.tus.items.Book;
 import com.tus.items.Item;
+import com.tus.items.ItemTypeEnum;
 import com.tus.user.User;
 
 public class DAO implements DAOMethods{
@@ -41,11 +41,12 @@ public class DAO implements DAOMethods{
     public void saveUser(final User user) throws UserAlreadyExists {
         try {
             if(getUser(user.getUsername()) != null){
-                throw new UserAlreadyExists();
+                throw new UserAlreadyExists(user.getUsername());
             }
         } catch (UserNotFound e) {
-            if(!users.add(user)){
-                throw new UserAlreadyExists();
+            final boolean add = users.add(user);
+            if(!add){
+                throw new UserAlreadyExists(user.getUsername());
             }
         }
 
@@ -54,7 +55,7 @@ public class DAO implements DAOMethods{
     public void updateUser(final User user) throws FailedToSave,UserNotFound {
         removeUser(user);
         if(!users.add(user)){
-            throw new FailedToSave();
+            throw new FailedToSave(user.getUsername());
         }
     }
 
@@ -76,8 +77,8 @@ public class DAO implements DAOMethods{
         return users;
     }
 
-    public Item getItem(final String itemName) throws ItemDoesntExist {
-        return  items.stream().filter(item -> item.getName().equals(itemName)).findFirst().orElseThrow(() -> new ItemDoesntExist() );
+    public Item getItem(final String itemName, ItemTypeEnum itemType) throws ItemNotFound {
+        return  items.stream().filter(item -> item.getName().equals(itemName) && item.getItemType().equals(itemType)).findFirst().orElseThrow(() -> new ItemNotFound(itemName) );
     }
 
     public Set<Item> getAllItemsOfType(final Class itemClass){
@@ -88,9 +89,16 @@ public class DAO implements DAOMethods{
         return items;
     }
 
-    public boolean saveItem(final Item item) throws ItemAlreadyExists {
-        if(!items.add(item))
-            throw new ItemAlreadyExists();
+    public boolean saveItem(final Item item ) throws ItemAlreadyExists {
+        try {
+            if(getItem(item.getName(), item.getItemType()) != null){
+                throw new ItemAlreadyExists(item.getName());
+            }
+        } catch ( ItemNotFound e) {
+            if(!items.add(item)){
+                throw new ItemAlreadyExists(item.getName());
+            }
+        }
 
         return false;
     }
@@ -104,22 +112,23 @@ public class DAO implements DAOMethods{
         final List<Item> itemsAlreadySaved = items.stream().filter(item -> this.items.contains(item)).collect(Collectors.toList());
 
         if(itemsAlreadySaved.size() > 0) {
-            throw new ItemAlreadyExists();
+            throw new ItemAlreadyExists("");
         }
 
         return false;
     }
 
-    public void updateItem(final Item item) throws ItemDoesntExist {
-        if(!items.remove(item)) {
-            throw new ItemDoesntExist();
+    public void updateItem(final Item item) throws FailedToSave, ItemNotFound {
+        removeItem(item);
+        if(!items.add(item)) {
+            throw new FailedToSave(item.getName());
         }
-        items.add(item);
+
     }
 
-    public void removeItem(final Item item) throws ItemDoesntExist {
+    public void removeItem(final Item item) throws ItemNotFound {
         if(!items.remove(item)){
-            throw new ItemDoesntExist();
+            throw new ItemNotFound(item.getName());
         }
     }
 }

@@ -12,6 +12,8 @@
 
 package com.tus.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import static com.tus.gui.GuiUtil.exitButtonAction;
@@ -28,28 +30,34 @@ public class EmployeeAdminUserMenu extends JFrame{
     private JButton createNewItemButton;
     private JButton listAllUsersButton;
 
-    public EmployeeAdminUserMenu(EmployeeRole user){
+    public EmployeeAdminUserMenu(User user){
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(400,300);
+            setSize(400,300);
         setVisible(true);
         setContentPane(employeeAdminPanel);
 
         createNewUserButton.addActionListener(ActionEvent -> {
             setVisible(false);
+            new CreateUpdateUserView(this,user);
         });
 
         exitButton.addActionListener(exitButtonAction(this));
 
         listAllItemsButton.addActionListener(ActionEvent -> {
             setVisible(false);
-            new ListViewItems(((RegularUserRole) user).getAllItems(), (User) user);
+            new ListViewItems(user);
         });
 
 
         listAllUsersButton.addActionListener(ActionEvent -> {
             setVisible(false);
-            new ListViewUsers(user.getAllUsers(),(User) user);
+            new ListViewUsers(user);
+        });
+
+        createNewItemButton.addActionListener(e -> {
+            setVisible(false);
+            new CreateUpdateItemView(this, user);
         });
     }
 }

@@ -16,12 +16,14 @@ import java.util.HashSet;
 
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
+import com.tus.exceptions.FailedToSave;
 import com.tus.exceptions.ItemAlreadyExists;
-import com.tus.exceptions.ItemDoesntExist;
+import com.tus.exceptions.ItemNotFound;
 import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.Game;
 import com.tus.items.Item;
+import com.tus.items.ItemTypeEnum;
 
 public interface InventoryMgmtRole {
     final DAO inventoryDao = DAOFactory.getDaoInstance();
@@ -34,16 +36,16 @@ public interface InventoryMgmtRole {
         inventoryDao.saveItems(makeCopyOf(items));
     }
 
-    public default void removeItem(String itemName) throws ItemDoesntExist {
-        Item item = inventoryDao.getItem(itemName);
+    public default void removeItem(String itemName, ItemTypeEnum itemTypeEnum) throws ItemNotFound {
+        Item item = inventoryDao.getItem(itemName, itemTypeEnum);
         inventoryDao.removeItem(item);
     }
-    public default void updateItem(Item item) throws ItemDoesntExist {
-        inventoryDao.updateItem(makeCopyOf(item));
+    public default void updateItem(Item item) throws FailedToSave, ItemNotFound {
+        inventoryDao.updateItem(item);
     }
 
-    public default void changeTotalNumberOfItemUnits(String itemName, int amount) throws Exception{
-        final Item item = inventoryDao.getItem(itemName);
+    public default void changeTotalNumberOfItemUnits(String itemName, ItemTypeEnum itemTypeEnum, int amount) throws Exception{
+        final Item item = inventoryDao.getItem(itemName, itemTypeEnum);
         item.changeAmountOfUnits(amount);
         inventoryDao.updateItem(item);
     }

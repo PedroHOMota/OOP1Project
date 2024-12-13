@@ -34,15 +34,17 @@ public class RegularUserMenu extends JFrame{
         setVisible(true);
         setContentPane(regularUserMenuPanel);
 
-
+        final RegularUserMenu regularUserMenu = this;
         exitButton.addActionListener(exitButtonAction(this));
 
         checkMyBorrowedItemsButton.addActionListener(e -> {
+            setVisible(false);
             new ViewBorrowedItems(this,user);
         });
 
         listItemsButton.addActionListener(e ->{
-            new ListViewItems(((RegularUser) user).getAllItems(),user);
+            setVisible(false);
+            new ListViewItems(user);
         });
     }
 

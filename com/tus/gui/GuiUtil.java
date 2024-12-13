@@ -31,9 +31,16 @@ public class GuiUtil {
     static void clearTable(final DefaultTableModel model){
         int rowCount = model.getRowCount();
         for(int i=0; i < rowCount;i++){
-            System.out.println("index: "+i+" modelSize: "+model.getRowCount());
             model.removeRow(0);
         }
+    }
+
+    static void switchActiveFrame(final JFrame toHide, final JFrame toShow){
+        toHide.setVisible(false);
+        toHide.setEnabled(false);
+        toHide.dispose();
+        toShow.setVisible(true);
+        toShow.setEnabled(true);
     }
 
     static void populateTable(final boolean isItem, Set mySet, final DefaultTableModel model){
@@ -43,15 +50,15 @@ public class GuiUtil {
                 if(item.getClass() == Game.class){
                     Game game = (Game) item;
                     model.addRow(new Object[] {game.getName(), game.getCreationDate(),game.getPlatform(),
-                        game.getAvailableUnits(),game.getTotalUnits()});
+                        game.getAvailableUnits(),item.getItemType(), game.getTotalUnits()});
                 } else if(item.getClass() == Book.class){
                     Book book = (Book) item;
                     model.addRow(new Object[] {book.getName(), book.getCreationDate(),book.getAuthor(),
-                        book.getAvailableUnits(),book.getTotalUnits()});
+                        book.getAvailableUnits(),item.getItemType(), book.getTotalUnits()});
                 } else {
                     Cd cd = (Cd) item;
                     model.addRow(new Object[] {cd.getName(), cd.getCreationDate(),cd.getArtist(),
-                        cd.getAvailableUnits(),cd.getTotalUnits()});
+                        cd.getAvailableUnits(),item.getItemType(), cd.getTotalUnits()});
                 }
             }
         } else {
@@ -99,12 +106,14 @@ public class GuiUtil {
         if(UserTypesEnum.REGULAR == user.getUserType()){
             return ActionListener -> {
                 frame.setVisible(false);
+                frame.dispose();
                 new RegularUserMenu(user);
             };
         } else {
             return ActionListener -> {
                 frame.setVisible(false);
-                new EmployeeAdminUserMenu((EmployeeRole) user);
+                frame.dispose();
+                new EmployeeAdminUserMenu(user);
             };
         }
     }
@@ -112,6 +121,8 @@ public class GuiUtil {
     static ActionListener exitButtonAction(final JFrame frame){
         return ActionEvent -> {
             frame.setVisible(false);
+            frame.setEnabled(false);
+            frame.dispose();
             new LoginMenu();
         };
     }

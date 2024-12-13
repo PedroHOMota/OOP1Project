@@ -12,17 +12,18 @@
 
 package com.tus.user;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tus.exceptions.ItemDoesntExist;
+import com.tus.exceptions.FailedToSave;
+import com.tus.exceptions.ItemNotFound;
+import com.tus.exceptions.MaxiumAllowanceReached;
 import com.tus.exceptions.NoAvailableUnits;
+import com.tus.exceptions.UserAlreadyBorrowedACopyOfItem;
 import com.tus.items.Item;
+import com.tus.items.ItemTypeEnum;
 
 public class RegularUser extends User implements RegularUserRole{
     private HashMap<Item,LocalDateTime> borrowedItems = new HashMap<Item, LocalDateTime>();
@@ -32,23 +33,24 @@ public class RegularUser extends User implements RegularUserRole{
     }
 
 
-    public void borrowItem(String itemName) throws Exception{
+    public void borrowItem(final String itemName, final ItemTypeEnum itemType)
+        throws NoAvailableUnits, ItemNotFound, MaxiumAllowanceReached, UserAlreadyBorrowedACopyOfItem, FailedToSave {
         final LocalDateTime returnDate = LocalDateTime.now().plusDays(7);
 
-        final Item item = regularUserDao.getItem(itemName);
+        final Item item = regularUserDao.getItem(itemName, itemType);
 
-        if(item.getAvailableUnits() > 0){
+        if(borrowedItems.containsKey(item)) throw new UserAlreadyBorrowedACopyOfItem(itemName);
+        if(borrowedItems.size() == 10) throw new MaxiumAllowanceReached("User already has borrowed 10 items");
+        if(item.borrowUnit() ){
             regularUserDao.updateItem(item);
             borrowedItems.put(item,returnDate);
         }
         else {
-            throw new NoAvailableUnits();
+            throw new NoAvailableUnits("Item "+itemName+" doesnt have any available unit");
         }
     }
 
-    public List checkOverdue() throws Exception{
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        final Date today = dateFormat.parse(dateFormat.format(LocalDateTime.now()));
+    public List checkOverdue(){
         final LocalDateTime now = LocalDateTime.now();
         final List<Map.Entry<Item, LocalDateTime>> entries = borrowedItems.entrySet().stream().filter(entry -> {
             return entry.getValue().compareTo(now) > 0;
@@ -57,7 +59,7 @@ public class RegularUser extends User implements RegularUserRole{
         return entries;
     }
 
-    public void returnItem(Item item) throws ItemDoesntExist {
+    public void returnItem(Item item) throws ItemNotFound, FailedToSave {
         item.returnUnit();
         regularUserDao.updateItem(item);
         borrowedItems.remove(item);

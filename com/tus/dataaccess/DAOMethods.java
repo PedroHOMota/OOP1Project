@@ -13,16 +13,15 @@
 package com.tus.dataaccess;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.tus.exceptions.FailedToSave;
 import com.tus.exceptions.ItemAlreadyExists;
-import com.tus.exceptions.ItemDoesntExist;
+import com.tus.exceptions.ItemNotFound;
 import com.tus.exceptions.UserAlreadyExists;
 import com.tus.exceptions.UserNotFound;
 import com.tus.items.Item;
+import com.tus.items.ItemTypeEnum;
 import com.tus.user.User;
 
 public interface DAOMethods {
@@ -35,11 +34,11 @@ public interface DAOMethods {
     public Set<User> getAllUsersOfType(Class userClass);
     public Set<User> getAllUsers();
 
-    public Item getItem(String id) throws ItemDoesntExist;
+    public Item getItem(String id, ItemTypeEnum itemType) throws ItemNotFound;
     public boolean saveItem(Item item) throws ItemAlreadyExists;
     public boolean saveItems(Collection<Item> items) throws ItemAlreadyExists;
-    public void updateItem(Item item) throws ItemDoesntExist;
-    public void removeItem(Item item) throws ItemDoesntExist;
+    public void updateItem(Item item) throws FailedToSave, ItemNotFound;
+    public void removeItem(Item item) throws ItemNotFound;
     public Set<Item> getAllItemsOfType(Class userClass);
     public Set<Item> getAllItems();
 }

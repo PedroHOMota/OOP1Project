@@ -46,14 +46,15 @@ public class ListViewUsers extends JFrame{
     private DAO dao = DAOFactory.getDaoInstance();
     private DefaultTableModel model = (DefaultTableModel) infoTable.getModel();
 
-    public ListViewUsers(Set set, User user){
+    public ListViewUsers(User user){
+        final Set<User> allUsersSet = ((EmployeeRole) user).getAllUsers();
         infoTable.setShowGrid(true);
         setVisible(true);
         setSize(500, 200);
         setContentPane(mainPanel);
 
-        PopulateTableAndFilterBoxForUsers(set, user.getUserType());
-        filterButton.addActionListener(FilterForUsers(user,set));
+        PopulateTableAndFilterBoxForUsers(allUsersSet, user.getUserType());
+        filterButton.addActionListener(FilterForUsers(user,allUsersSet));
         backButton.addActionListener(backButtonAction(user,this));
 
         if(user.getUserType() != UserTypesEnum.ADMIN) {
@@ -62,9 +63,9 @@ public class ListViewUsers extends JFrame{
         }
 
         deleteUserButton.addActionListener(e -> {
-            final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
             AdminUser temp = (AdminUser) user;
             try {
+                final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
                 final User userToDelete = temp.getUser(userName);
                 if (userToDelete == user) {
                     JOptionPane.showMessageDialog(ListViewUsers.this, "Can not delete own user");
@@ -74,19 +75,27 @@ public class ListViewUsers extends JFrame{
                     populateTable(false, temp.getAllUsers(), model);
 
                 }
+            } catch (ArrayIndexOutOfBoundsException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewUsers.this,"Please select an item before proceeding");
             } catch(UserNotFound ex) {
                 JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to delete.");
+                ex.printStackTrace();
+            } catch (Exception ex){
                 ex.printStackTrace();
             }
         });
 
         updateUserButton.addActionListener(e -> {
             setVisible(false);
-            final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
             EmployeeRole temp = (EmployeeRole) user;
             try {
+                final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
                 final User userToUpdate = temp.getUser(userName);
-                new CreateUpdateUserView(this, user, userToUpdate);
+                new CreateUpdateUserView(ListViewUsers.this, user, userToUpdate);
+            } catch (ArrayIndexOutOfBoundsException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewUsers.this,"Please select an item before proceeding");
             } catch (UserNotFound ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to update.");
@@ -94,20 +103,24 @@ public class ListViewUsers extends JFrame{
         });
 
         listBorrowedItemsButton.addActionListener(e -> {
-            if (user.getUserType() != UserTypesEnum.REGULAR) {
-                JOptionPane.showMessageDialog(ListViewUsers.this, "User cant borrow anything");
-            } else {
-                setVisible(false);
+            EmployeeRole temp = (EmployeeRole) user;
+            try {
                 final String userName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
-                EmployeeRole temp = (EmployeeRole) user;
-                try {
-                    final User userToList = temp.getUser(userName);
-                    new ViewBorrowedItems(this, userToList);
-                } catch (UserNotFound ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to update.");
+                final User userToList = temp.getUser(userName);
+                if (userToList.getUserType() != UserTypesEnum.REGULAR) {
+                    JOptionPane.showMessageDialog(ListViewUsers.this, "User cant borrow anything");
+                }else {
+                    setVisible(false);
+                    new ViewBorrowedItems(ListViewUsers.this, userToList);
                 }
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewUsers.this, "Please select an item before proceeding");
+            } catch (UserNotFound ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewUsers.this, "User doesnt exist; nothing to update.");
             }
+
         });
     }
 

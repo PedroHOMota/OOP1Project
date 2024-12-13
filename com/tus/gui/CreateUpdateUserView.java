@@ -16,6 +16,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+import static com.tus.gui.GuiUtil.backButtonAction;
+import static com.tus.gui.GuiUtil.switchActiveFrame;
 import static com.tus.gui.GuiUtil.verifyField;
 
 import com.tus.exceptions.FailedToSave;
@@ -62,6 +64,8 @@ public class CreateUpdateUserView extends JFrame{
                     userToUpdate.setUsername(usernameField.getText());
                     userToUpdate.setName(nameField.getText());
                     ((EmployeeRole) userLogged).updateUserInfo(userToUpdate);
+                    setVisible(false);
+                    new ListViewUsers(userLogged);
                 } catch (FailedToSave ex){
                     JOptionPane.showMessageDialog(CreateUpdateUserView.this,"Failed to save user update");
                     ex.printStackTrace();
@@ -72,7 +76,10 @@ public class CreateUpdateUserView extends JFrame{
             }
         });
 
-        backButton.addActionListener(GuiUtil.backButtonAction(userLogged, previousFrame));
+        backButton.addActionListener(e -> {
+            setVisible(true);
+            switchActiveFrame(CreateUpdateUserView.this,previousFrame);
+        });
     }
 
     //Constructor called when creating a user
@@ -81,7 +88,7 @@ public class CreateUpdateUserView extends JFrame{
         setSize(500, 200);
         setContentPane(mainPane);
 
-        createButton.setText("Update");
+        createButton.setText("Create");
 
         if(userLogged.getUserType().equals(UserTypesEnum.ADMIN))
             userTypeComboBox.addItem(UserTypesEnum.ADMIN);
@@ -96,8 +103,8 @@ public class CreateUpdateUserView extends JFrame{
                     verifyField(usernameField,nameField,passwordField);
                     temp.createAUser(usernameField.getText(), nameField.getText(), passwordField.getText(), (UserTypesEnum) userTypeComboBox.getSelectedItem());
 
-                    setVisible(false);
-                    previousFrame.setVisible(true);
+                    switchActiveFrame(CreateUpdateUserView.this,previousFrame);
+
                 } catch (UserAlreadyExists ex){
                     JOptionPane.showMessageDialog(CreateUpdateUserView.this,"User with this details already exists");
                     ex.printStackTrace();
@@ -111,6 +118,6 @@ public class CreateUpdateUserView extends JFrame{
             }
         });
 
-        backButton.addActionListener(GuiUtil.backButtonAction(userLogged, previousFrame));
+        backButton.addActionListener(backButtonAction(userLogged,this));
     }
 }

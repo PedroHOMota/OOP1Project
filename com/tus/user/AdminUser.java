@@ -14,6 +14,7 @@ package com.tus.user;
 
 import com.tus.exceptions.UserAlreadyExists;
 import com.tus.exceptions.UserNotFound;
+import com.tus.items.ItemTypeEnum;
 
 public class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole, RegularUserRole{
 
@@ -27,7 +28,7 @@ public class AdminUser extends User implements AdminRole, EmployeeRole, Inventor
             AdminUser adminUser = new AdminUser(username,name,password,userType);
             dao.saveUser(adminUser);
         }
-        if(userType == UserTypesEnum.EMPLOYEE){
+        else if(userType == UserTypesEnum.EMPLOYEE){
             EmployeeUser employeeUser = new EmployeeUser(username,name,password,userType);
             dao.saveUser(employeeUser);
         } else {
@@ -45,7 +46,7 @@ public class AdminUser extends User implements AdminRole, EmployeeRole, Inventor
     }
 
     @Override
-    public void borrowItem(final String itemName) throws Exception {
+    public void borrowItem(final String itemName, final ItemTypeEnum itemType) throws Exception {
         throw new Exception();
     }
 }

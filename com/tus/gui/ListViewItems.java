@@ -25,11 +25,15 @@ import static com.tus.gui.GuiUtil.populateTable;
 
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
-import com.tus.exceptions.ItemDoesntExist;
+import com.tus.exceptions.ItemNotFound;
+import com.tus.exceptions.MaxiumAllowanceReached;
+import com.tus.exceptions.NoAvailableUnits;
+import com.tus.exceptions.UserAlreadyBorrowedACopyOfItem;
 import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.Game;
 import com.tus.items.Item;
+import com.tus.items.ItemTypeEnum;
 import com.tus.user.InventoryMgmtRole;
 import com.tus.user.RegularUser;
 import com.tus.user.RegularUserRole;
@@ -48,63 +52,91 @@ public class ListViewItems extends JFrame{
     private DAO dao = DAOFactory.getDaoInstance();
     private DefaultTableModel model = (DefaultTableModel) infoTable.getModel();
 
-    public ListViewItems(Set set, User user){
+    public ListViewItems(User userLogged){
+        final Set<Item> allItemsSet = ((RegularUserRole) userLogged).getAllItems();
         infoTable.setShowGrid(true);
         setVisible(true);
-        setSize(500, 200);
+        setSize(600, 200);
         setContentPane(mainPanel);
 
-        if(user.getUserType() == UserTypesEnum.REGULAR){
+        if(userLogged.getUserType() == UserTypesEnum.REGULAR){
             deleteItemButton.setVisible(false);
             deleteItemButton.setEnabled(false);
             updateItemButton.setEnabled(false);
-            deleteItemButton.setVisible(false);
+            updateItemButton.setVisible(false);
         } else {
             borrowItemButton.setVisible(false);
             borrowItemButton.setEnabled(false);
         }
 
-        PopulateTableAndFilterBoxForItems(user,set);
-        filterButton.addActionListener(FilterForItems(user,set));
+        PopulateTableAndFilterBoxForItems(userLogged,allItemsSet);
+        filterButton.addActionListener(FilterForItems(userLogged,allItemsSet));
 
-        backButton.addActionListener(backButtonAction(user,this));
+        backButton.addActionListener(backButtonAction(userLogged,this));
 
         borrowItemButton.addActionListener(actionEvent -> {
             try {
                 final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
-                RegularUser temp = (RegularUser) user;
-                temp.borrowItem(itemName);
+                final ItemTypeEnum itemType = (ItemTypeEnum) infoTable.getValueAt(infoTable.getSelectedRow(), 4);
+
+                RegularUser regularUser = (RegularUser) userLogged;
+                regularUser.borrowItem(itemName, itemType);
+                clearTable(model);
+                populateTable(true,regularUser.getAllItems(),model);
             } catch (ArrayIndexOutOfBoundsException ex){
-                JOptionPane.showMessageDialog(ListViewItems.this,"Please select an item to borrow");
-            } catch (Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewItems.this,"Please select an item before proceeding");
+            } catch (NoAvailableUnits ex){
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(ListViewItems.this,"No available units to borrow");
+            } catch (ItemNotFound ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewItems.this,"Could not find item");
+            } catch (MaxiumAllowanceReached ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewItems.this,"Maximum allowance of 10 reached");
+            } catch (UserAlreadyBorrowedACopyOfItem ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewItems.this,"You have already borrowed a copy of this item");
+            } catch (Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(ListViewItems.this,"General Error");
             }
+
         });
 
         deleteItemButton.addActionListener(e -> {
-            final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
-            InventoryMgmtRole temp = (InventoryMgmtRole) user;
+            InventoryMgmtRole temp = (InventoryMgmtRole) userLogged;
             try {
-                System.out.println(itemName);
-                temp.removeItem(itemName);
+                final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
+                final ItemTypeEnum itemType = (ItemTypeEnum) infoTable.getValueAt(infoTable.getSelectedRow(), 4);
+
+                temp.removeItem(itemName,itemType);
                 clearTable(model);
                 populateTable(true,((RegularUserRole) temp).getAllItems(),model);
-            } catch (ItemDoesntExist ex) {
-                JOptionPane.showMessageDialog(ListViewItems.this,"Item doesnt exist; nothing to delete.");
+            } catch (ArrayIndexOutOfBoundsException ex){
+                JOptionPane.showMessageDialog(ListViewItems.this,"Please select an item before proceeding");
+            } catch (ItemNotFound ex) {
+                JOptionPane.showMessageDialog(ListViewItems.this,"Item doesnt exist; nothing to delete");
                 ex.printStackTrace();
             }
         });
 
         updateItemButton.addActionListener(e -> {
-            final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
+            setVisible(false);
             Item itemToUpdate = null;
             try {
-                itemToUpdate = (Item) set.stream().filter(item -> ((Item) item).getName().equals(itemName)).findFirst().get();
+                final String itemName = infoTable.getValueAt(infoTable.getSelectedRow(), 0).toString();
+                final ItemTypeEnum itemType = (ItemTypeEnum) infoTable.getValueAt(infoTable.getSelectedRow(), 4);
 
+                final Item item = ((RegularUserRole) userLogged).getItem(itemName,itemType);
+                new CreateUpdateItemView(ListViewItems.this,item,userLogged);
+
+            } catch (ArrayIndexOutOfBoundsException ex){
+                JOptionPane.showMessageDialog(ListViewItems.this,"Please select an item before proceeding");
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(ListViewItems.this,"Failed to retrieve item.");
             }
-            new CreateUpdateItemView(this,itemToUpdate,user);
         });
     }
 
@@ -113,6 +145,8 @@ public class ListViewItems extends JFrame{
         model.addColumn("Published Date");
         model.addColumn("Game Platform/Artist/Author");
         model.addColumn("Available Units");
+        model.addColumn("Item Type");
+
         if(user.getUserType() == UserTypesEnum.ADMIN || user.getUserType() == UserTypesEnum.EMPLOYEE){
             model.addColumn("Total Units");
         }

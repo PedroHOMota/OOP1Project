@@ -50,7 +50,7 @@ public class LoginMenu extends JFrame {
                     if(tempUser.getUserType() == UserTypesEnum.REGULAR)
                         new RegularUserMenu(tempUser);
                     else
-                        new EmployeeAdminUserMenu((EmployeeRole) tempUser);
+                        new EmployeeAdminUserMenu(tempUser);
                 }
             }
         });

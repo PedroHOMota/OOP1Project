@@ -12,13 +12,17 @@
 
 package com.tus.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 
+import static com.tus.gui.GuiUtil.backButtonAction;
+import static com.tus.gui.GuiUtil.switchActiveFrame;
 import static com.tus.gui.GuiUtil.verifyField;
 
 import com.tus.exceptions.ItemAlreadyExists;
+import com.tus.exceptions.ItemNotFound;
 import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.Game;
@@ -38,62 +42,113 @@ public class CreateUpdateItemView extends JFrame{
     private JLabel extraInfoLabel;
     private JComboBox gamePlatformComboBox;
     private JPanel mainPanel;
+    private JComboBox itemTypeComboBox;
 
     //Constructor called when creating a new item
-    public CreateUpdateItemView(final JFrame previousFrame, final ItemTypeEnum itemType, final User userLogged) {
+    public CreateUpdateItemView(final JFrame previousFrame, final User userLogged) {
         setContentPane(mainPanel);
         setVisible(true);
+        setSize(400,300);
 
-        switch (itemType){
-            case GAME: {
-                extraInfoLabel.setVisible(false);
-                extraInfoTextField.setVisible(false);
-                gamePlatformComboBox.addItem(GamePlatforms.PS3);
-                gamePlatformComboBox.addItem(GamePlatforms.WII);
-                gamePlatformComboBox.addItem(GamePlatforms.XBOX360);
-                break;
-            }
-            case CD: {
-                extraInfoTextField.setText("Artist:");
-                gamePlatformComboBox.setVisible(false);
-                break;
-            }
-            case BOOK:{
-                extraInfoTextField.setText("Author:");
-                gamePlatformComboBox.setVisible(false);
-                break;
-            }
+        ItemTypeEnum itemType = ItemTypeEnum.GAME;
+        extraInfoLabel.setVisible(false);
+        extraInfoTextField.setVisible(false);
+        gamePlatformComboBox.addItem(GamePlatforms.PS3);
+        gamePlatformComboBox.addItem(GamePlatforms.WII);
+        gamePlatformComboBox.addItem(GamePlatforms.XBOX360);
 
-        }
+        itemTypeComboBox.addItem(ItemTypeEnum.GAME);
+        itemTypeComboBox.addItem(ItemTypeEnum.CD);
+        itemTypeComboBox.addItem(ItemTypeEnum.BOOK);
+
+        itemTypeComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(final ItemEvent e) {
+                if(e.getStateChange() != ItemEvent.SELECTED) return;
+
+                switch ((ItemTypeEnum) itemTypeComboBox.getSelectedItem()) {
+                    case GAME: {
+                        extraInfoLabel.setVisible(false);
+                        extraInfoTextField.setVisible(false);
+                        gamePlatformComboBox.setVisible(true);
+                        gamePlatformComboBox.setEnabled(true);
+                        gamePlatformComboBox.removeAllItems();
+                        gamePlatformComboBox.addItem(GamePlatforms.PS3);
+                        gamePlatformComboBox.addItem(GamePlatforms.WII);
+                        gamePlatformComboBox.addItem(GamePlatforms.XBOX360);
+                        break;
+                    }
+                    case CD: {
+                        extraInfoLabel.setText("Artist:");
+                        extraInfoLabel.setVisible(true);
+                        extraInfoTextField.setVisible(true);
+                        gamePlatformComboBox.setVisible(false);
+                        gamePlatformComboBox.setEnabled(false);
+                        break;
+                    }
+                    case BOOK: {
+                        extraInfoLabel.setText("Author:");
+                        extraInfoLabel.setVisible(true);
+                        extraInfoTextField.setVisible(true);
+                        gamePlatformComboBox.setVisible(false);
+                        gamePlatformComboBox.setEnabled(false);
+                        break;
+                    }
+                }
+            }
+        });
 
         createButton.addActionListener(e -> {
             try {
-                final int units = Integer.parseInt(totalUnitsTextField.getText());
-                InventoryMgmtRole temp = (InventoryMgmtRole) userLogged;
-                Item item;
-
                 verifyField(totalUnitsTextField,dateTextField,nameTextField);
-                if (gamePlatformComboBox.isVisible()) {
-                    item = new Game(nameTextField.getText(),dateTextField.getText(),units,units,(GamePlatforms) gamePlatformComboBox.getSelectedItem(),itemType);
-                } else {
-                    verifyField(extraInfoTextField);
-                    if(itemType == ItemTypeEnum.BOOK){
-                        item = new Book(nameTextField.getText(),dateTextField.getText(),units,units,extraInfoTextField.getText(),itemType);
+                InventoryMgmtRole inventoryMgmtUser = (InventoryMgmtRole) userLogged;
 
-                    }
-                    else {
-                        item = new Cd(nameTextField.getText(),dateTextField.getText(),units,units,extraInfoTextField.getText(),itemType);
-                    }
+                Item item = null;
+
+                if(itemTypeComboBox.getSelectedItem() == ItemTypeEnum.BOOK) {
+                    item = new Book(
+                        nameTextField.getText(),
+                        dateTextField.getText(),
+                        Integer.parseInt(totalUnitsTextField.getText()),
+                        Integer.parseInt(totalUnitsTextField.getText()),
+                        extraInfoTextField.getText(),
+                        ItemTypeEnum.BOOK
+                    );
+                    verifyField(extraInfoTextField);
+                } else if(itemTypeComboBox.getSelectedItem() == ItemTypeEnum.CD){
+                    verifyField(extraInfoTextField);
+                    item = new Cd(
+                        nameTextField.getText(),
+                        dateTextField.getText(),
+                        Integer.parseInt(totalUnitsTextField.getText()),
+                        Integer.parseInt(totalUnitsTextField.getText()),
+                        extraInfoTextField.getText(),
+                        ItemTypeEnum.CD
+                    );
+                } else {
+                    item = new Game(
+                        nameTextField.getText(),
+                        dateTextField.getText(),
+                        Integer.parseInt(totalUnitsTextField.getText()),
+                        Integer.parseInt(totalUnitsTextField.getText()),
+                        (GamePlatforms) gamePlatformComboBox.getSelectedItem(),
+                        ItemTypeEnum.GAME
+                    );
                 }
 
-                temp.addItem(item);
+                inventoryMgmtUser.addItem(item);
                 setVisible(false);
-                previousFrame.setVisible(true);
+                setEnabled(false);
+
+                new EmployeeAdminUserMenu(userLogged);
             }catch (NumberFormatException ex){
-                JOptionPane.showMessageDialog(CreateUpdateItemView.this,"Number of units has be an integer");
+                JOptionPane.showMessageDialog(CreateUpdateItemView.this,"Number of units must be an integer");
                 ex.printStackTrace();
             }catch (ItemAlreadyExists ex){
                 JOptionPane.showMessageDialog(CreateUpdateItemView.this,"This item already exists");
+                ex.printStackTrace();
+            }catch (ItemNotFound ex){
+                JOptionPane.showMessageDialog(CreateUpdateItemView.this,"Could not find item");
                 ex.printStackTrace();
             }catch (Exception ex){
                 JOptionPane.showMessageDialog(CreateUpdateItemView.this,"No field can be empty");
@@ -101,13 +156,18 @@ public class CreateUpdateItemView extends JFrame{
             }
         });
 
-        backButton.addActionListener(GuiUtil.backButtonAction(userLogged, previousFrame));
+
+        backButton.addActionListener(backButtonAction(userLogged,this));
+
     }
 
     //Constructor called when updating item
     public CreateUpdateItemView(final JFrame previousFrame, final Item item, final User userLogged) {
         setContentPane(mainPanel);
         setVisible(true);
+        setSize(400,300);
+        itemTypeComboBox.setVisible(false);
+        itemTypeComboBox.setEnabled(false);
 
         createButton.setText("Update");
         nameTextField.setText(item.getName());
@@ -139,28 +199,36 @@ public class CreateUpdateItemView extends JFrame{
         createButton.addActionListener(e -> {
             try {
                 verifyField(totalUnitsTextField,dateTextField,nameTextField);
-                InventoryMgmtRole temp = (InventoryMgmtRole) userLogged;
+                InventoryMgmtRole inventoryMgmtUser = (InventoryMgmtRole) userLogged;
+
 
                 item.setCreationDate(dateTextField.getText());
                 item.setName(nameTextField.getText());
-                item.setTotalUnits(Integer.parseInt(totalUnitsTextField.getText()));
+                item.changeAmountOfUnits(Integer.parseInt(totalUnitsTextField.getText()));
 
                 if(item.getItemType() == ItemTypeEnum.BOOK) {
                     verifyField(extraInfoTextField);
                     ((Book) item).setAuthor(extraInfoTextField.getText());
-                } else {
+                } else if(item.getItemType() == ItemTypeEnum.CD){
                     verifyField(extraInfoTextField);
                     ((Cd) item).setArtist(extraInfoTextField.getText());
                 }
 
-                temp.updateItem(item);
+                inventoryMgmtUser.updateItem(item);
+
                 setVisible(false);
+                setEnabled(false);
+
                 previousFrame.setVisible(true);
+                new ListViewItems(userLogged);
             }catch (NumberFormatException ex){
                 JOptionPane.showMessageDialog(CreateUpdateItemView.this,"Number of units has be an integer");
                 ex.printStackTrace();
             }catch (ItemAlreadyExists ex){
                 JOptionPane.showMessageDialog(CreateUpdateItemView.this,"This item already exists");
+                ex.printStackTrace();
+            }catch (ItemNotFound ex){
+                JOptionPane.showMessageDialog(CreateUpdateItemView.this,"Could not find item");
                 ex.printStackTrace();
             }catch (Exception ex){
                 JOptionPane.showMessageDialog(CreateUpdateItemView.this,"No field can be empty");
@@ -168,6 +236,8 @@ public class CreateUpdateItemView extends JFrame{
             }
         });
 
-        backButton.addActionListener(GuiUtil.backButtonAction(userLogged, previousFrame));
+        backButton.addActionListener(e -> {
+            switchActiveFrame(CreateUpdateItemView.this,previousFrame);
+        });
     }
 }
