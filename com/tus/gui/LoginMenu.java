@@ -1,15 +1,3 @@
-/*------------------------------------------------------------------------------
- *******************************************************************************
- * COPYRIGHT Ericsson 2024
- *
- * The copyright to the computer program(s) herein is the property of
- * Ericsson Inc. The programs may be used and/or copied only with written
- * permission from Ericsson Inc. or in accordance with the terms and
- * conditions stipulated in the agreement/contract under which the
- * program(s) have been supplied.
- *******************************************************************************
- *----------------------------------------------------------------------------*/
-
 package com.tus.gui;
 
 import java.awt.event.ActionEvent;
@@ -19,7 +7,6 @@ import javax.swing.*;
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
 import com.tus.exceptions.UserNotFound;
-import com.tus.user.EmployeeRole;
 import com.tus.user.User;
 import com.tus.user.UserTypesEnum;
 
