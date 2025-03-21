@@ -1,7 +1,7 @@
 
 package com.tus.dataaccess;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +12,9 @@ import com.tus.exceptions.ItemAlreadyExists;
 import com.tus.exceptions.ItemNotFound;
 import com.tus.exceptions.UserAlreadyExists;
 import com.tus.exceptions.UserNotFound;
+import com.tus.items.Book;
+import com.tus.items.Cd;
+import com.tus.items.Game;
 import com.tus.items.Item;
 import com.tus.items.ItemTypeEnum;
 import com.tus.user.User;
@@ -32,7 +35,7 @@ public class DAO implements DAOMethods{
             if(getUser(user.getUsername()) != null){
                 throw new UserAlreadyExists(user.getUsername());
             }
-        } catch (UserNotFound e) {
+        } catch (UserNotFound _) {
             final boolean add = users.add(user);
             if(!add){
                 throw new UserAlreadyExists(user.getUsername());
@@ -78,12 +81,13 @@ public class DAO implements DAOMethods{
         return items;
     }
 
-    public boolean saveItem(final Item item ) throws ItemAlreadyExists {
+    public boolean saveItem(final Item itemToSave ) throws ItemAlreadyExists {
+        final Item item = makeCopyOf(itemToSave);
         try {
             if(getItem(item.getName(), item.getItemType()) != null){
                 throw new ItemAlreadyExists(item.getName());
             }
-        } catch ( ItemNotFound e) {
+        } catch (ItemNotFound _) {
             if(!items.add(item)){
                 throw new ItemAlreadyExists(item.getName());
             }
@@ -92,19 +96,13 @@ public class DAO implements DAOMethods{
         return false;
     }
 
-    public boolean saveItems(final Collection<Item> items) throws ItemAlreadyExists {
-        this.items.addAll(items);
-        items.forEach(item -> {
-            this.items.contains(item);
-        });
-
-        final List<Item> itemsAlreadySaved = items.stream().filter(item -> this.items.contains(item)).collect(Collectors.toList());
-
-        if(itemsAlreadySaved.size() > 0) {
-            throw new ItemAlreadyExists("");
+    public void saveItems(final Item... items) throws ItemAlreadyExists {
+        final List<Item> itemsToSave = Arrays.stream(items).filter(item -> !this.items.contains(item))
+            .map(item -> makeCopyOf(item))
+            .collect(Collectors.toList());
+        for (var item: itemsToSave) {
+            this.items.add(item);
         }
-
-        return false;
     }
 
     public void updateItem(final Item item) throws FailedToSave, ItemNotFound {
@@ -119,5 +117,59 @@ public class DAO implements DAOMethods{
         if(!items.remove(item)){
             throw new ItemNotFound(item.getName());
         }
+    }
+
+
+    private Item makeCopyOf(Item item){
+        switch (item){
+            case Book book : {break;}
+            case Game game :{
+                break;
+            }
+            case Cd cd:{
+                break;
+            }
+        }
+        if(item.getClass() == Book.class){
+            Book copy = new Book(item.getName(),
+                item.getCreationDate(),
+                item.getTotalUnits(),
+                item.getAvailableUnits(),
+                ((Book) item).getAuthor(),
+                item.getItemType());
+
+            return copy;
+        }
+        else if (item.getClass() == Game.class) {
+            Game copy = new Game(
+                item.getName(),
+                item.getCreationDate(),
+                item.getTotalUnits(),
+                item.getAvailableUnits(),
+                ((Game) item).getPlatform(),
+                item.getItemType());
+
+            return copy;
+        }
+        else {
+            Cd copy = new Cd(item.getName(),
+                item.getCreationDate(),
+                item.getTotalUnits(),
+                item.getAvailableUnits(),
+                ((Cd) item).getArtist(),
+                item.getItemType());
+
+            return copy;
+        }
+    }
+
+    private Item[] makeCopyOf(Item[] items){
+        HashSet<Item> copySet = new HashSet();
+
+        for(Item item : items){
+            copySet.add(makeCopyOf(item));
+        }
+
+        return (Item[]) copySet.toArray();
     }
 }

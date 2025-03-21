@@ -1,7 +1,6 @@
 
 package com.tus.dataaccess;
 
-import java.util.Collection;
 import java.util.Set;
 
 import com.tus.exceptions.FailedToSave;
@@ -25,9 +24,11 @@ public interface DAOMethods {
 
     public Item getItem(String id, ItemTypeEnum itemType) throws ItemNotFound;
     public boolean saveItem(Item item) throws ItemAlreadyExists;
-    public boolean saveItems(Collection<Item> items) throws ItemAlreadyExists;
+    public void saveItems(Item... items) throws ItemAlreadyExists;
     public void updateItem(Item item) throws FailedToSave, ItemNotFound;
     public void removeItem(Item item) throws ItemNotFound;
     public Set<Item> getAllItemsOfType(Class userClass);
     public Set<Item> getAllItems();
+
+
 }

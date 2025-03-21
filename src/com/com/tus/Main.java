@@ -1,23 +1,14 @@
-
 package com.tus;
-
-import javax.swing.text.html.ListView;
 
 import com.tus.dataaccess.DAO;
 import com.tus.dataaccess.DAOFactory;
-import com.tus.gui.CreateUpdateUserView;
-import com.tus.gui.EmployeeAdminUserMenu;
-import com.tus.gui.ListViewItems;
-import com.tus.gui.ListViewUsers;
 import com.tus.gui.LoginMenu;
-import com.tus.gui.RegularUserMenu;
 import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.Game;
-import com.tus.items.GamePlatforms;
+import com.tus.items.GamePlatformsEnum;
 import com.tus.items.ItemTypeEnum;
 import com.tus.user.AdminUser;
-import com.tus.user.EmployeeRole;
 import com.tus.user.EmployeeUser;
 import com.tus.user.RegularUser;
 import com.tus.user.RegularUserRole;
@@ -35,9 +26,9 @@ public class Main {
         Book book2 = new Book("King of Thorns","01/01/2001",10,10,"Mark Lawrance",ItemTypeEnum.BOOK);
         Book book3 = new Book("Sophie's World","01/01/2001",10,10,"Jostein Gaarder",ItemTypeEnum.BOOK);
 
-        Game game = new Game("F1 2012","01/01/2001",10,10, GamePlatforms.XBOX360, ItemTypeEnum.GAME);
-        Game game2 = new Game("Final Fantasy XIII","01/01/2001",10,10, GamePlatforms.PS3, ItemTypeEnum.GAME);
-        Game game3 = new Game("Super Mario Galaxy","01/01/2001",10,10, GamePlatforms.WII, ItemTypeEnum.GAME);
+        Game game = new Game("F1 2012","01/01/2001",10,10, GamePlatformsEnum.XBOX360, ItemTypeEnum.GAME);
+        Game game2 = new Game("Final Fantasy XIII","01/01/2001",10,10, GamePlatformsEnum.PS3, ItemTypeEnum.GAME);
+        Game game3 = new Game("Super Mario Galaxy","01/01/2001",10,10, GamePlatformsEnum.WII, ItemTypeEnum.GAME);
         Cd cd=new Cd("And Justice for All","01/01/2001",10,10,"Metallica", ItemTypeEnum.CD);
         Cd cd2=new Cd("Viva the underdogs","01/01/2001",10,10,"Parkway Drive", ItemTypeEnum.CD);
         Cd cd3=new Cd("Rebirth","01/01/2001",10,10,"Angra", ItemTypeEnum.CD);

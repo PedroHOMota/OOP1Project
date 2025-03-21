@@ -2,7 +2,6 @@ package com.tus.gui;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 import static com.tus.gui.GuiUtil.backButtonAction;
@@ -14,7 +13,7 @@ import com.tus.exceptions.ItemNotFound;
 import com.tus.items.Book;
 import com.tus.items.Cd;
 import com.tus.items.Game;
-import com.tus.items.GamePlatforms;
+import com.tus.items.GamePlatformsEnum;
 import com.tus.items.Item;
 import com.tus.items.ItemTypeEnum;
 import com.tus.user.InventoryMgmtRole;
@@ -41,9 +40,9 @@ public class CreateUpdateItemView extends JFrame{
         ItemTypeEnum itemType = ItemTypeEnum.GAME;
         extraInfoLabel.setVisible(false);
         extraInfoTextField.setVisible(false);
-        gamePlatformComboBox.addItem(GamePlatforms.PS3);
-        gamePlatformComboBox.addItem(GamePlatforms.WII);
-        gamePlatformComboBox.addItem(GamePlatforms.XBOX360);
+        gamePlatformComboBox.addItem(GamePlatformsEnum.PS3);
+        gamePlatformComboBox.addItem(GamePlatformsEnum.WII);
+        gamePlatformComboBox.addItem(GamePlatformsEnum.XBOX360);
 
         itemTypeComboBox.addItem(ItemTypeEnum.GAME);
         itemTypeComboBox.addItem(ItemTypeEnum.CD);
@@ -61,9 +60,9 @@ public class CreateUpdateItemView extends JFrame{
                         gamePlatformComboBox.setVisible(true);
                         gamePlatformComboBox.setEnabled(true);
                         gamePlatformComboBox.removeAllItems();
-                        gamePlatformComboBox.addItem(GamePlatforms.PS3);
-                        gamePlatformComboBox.addItem(GamePlatforms.WII);
-                        gamePlatformComboBox.addItem(GamePlatforms.XBOX360);
+                        gamePlatformComboBox.addItem(GamePlatformsEnum.PS3);
+                        gamePlatformComboBox.addItem(GamePlatformsEnum.WII);
+                        gamePlatformComboBox.addItem(GamePlatformsEnum.XBOX360);
                         break;
                     }
                     case CD: {
@@ -119,7 +118,7 @@ public class CreateUpdateItemView extends JFrame{
                         dateTextField.getText(),
                         Integer.parseInt(totalUnitsTextField.getText()),
                         Integer.parseInt(totalUnitsTextField.getText()),
-                        (GamePlatforms) gamePlatformComboBox.getSelectedItem(),
+                        (GamePlatformsEnum) gamePlatformComboBox.getSelectedItem(),
                         ItemTypeEnum.GAME
                     );
                 }

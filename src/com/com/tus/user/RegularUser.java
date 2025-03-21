@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.tus.exceptions.FailedToSave;
 import com.tus.exceptions.ItemNotFound;
@@ -17,8 +18,9 @@ import com.tus.items.ItemTypeEnum;
 public class RegularUser extends User implements RegularUserRole{
     private HashMap<Item,LocalDateTime> borrowedItems = new HashMap<Item, LocalDateTime>();
 
-    public RegularUser(final String username, final String name, final String password, final UserTypesEnum userType) {
-        super(username, name, password, userType);
+    public RegularUser(final String username, final String name, final String password,
+                       final UserTypesEnum userType, Address address) {
+        super(username, name, password, userType, address);
     }
 
 
@@ -41,10 +43,13 @@ public class RegularUser extends User implements RegularUserRole{
 
     public List checkOverdue(){
         final LocalDateTime now = LocalDateTime.now();
-        final List<Map.Entry<Item, LocalDateTime>> entries = borrowedItems.entrySet().stream().filter(entry -> {
-            return entry.getValue().compareTo(now) > 0;
-        }).toList();
 
+        Predicate<Map.Entry<Item, LocalDateTime>> predicate = entry -> {
+            return entry.getValue().compareTo(now) > 0;
+        };
+
+        final List<Map.Entry<Item, LocalDateTime>> entries = borrowedItems.entrySet()
+            .stream().filter(predicate).toList();
         return entries;
     }
 

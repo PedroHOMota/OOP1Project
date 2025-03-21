@@ -2,7 +2,7 @@
 
 package com.tus.items;
 
-public abstract class Item {
+public sealed abstract class Item permits Book,Cd,Game {
 
     private String name;
     private String creationDate;

@@ -1,7 +1,7 @@
 
 package com.tus.items;
 
-public class Cd extends Item{
+public final class Cd extends Item{
     private String artist;
 
     public Cd(final String name, final String publishedDate, final int totalUnits, final int availableUnits, final String artist, final ItemTypeEnum itemTypeEnum) {

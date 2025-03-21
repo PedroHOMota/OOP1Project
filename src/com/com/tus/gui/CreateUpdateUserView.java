@@ -11,7 +11,6 @@ import static com.tus.gui.GuiUtil.verifyField;
 import com.tus.exceptions.FailedToSave;
 import com.tus.exceptions.NotSupportedException;
 import com.tus.exceptions.UserAlreadyExists;
-import com.tus.exceptions.UserNotFound;
 import com.tus.user.EmployeeRole;
 import com.tus.user.User;
 import com.tus.user.UserTypesEnum;

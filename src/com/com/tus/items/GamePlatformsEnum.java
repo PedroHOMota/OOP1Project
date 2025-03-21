@@ -1,7 +1,7 @@
 
 package com.tus.items;
 
-public enum GamePlatforms {
+public enum GamePlatformsEnum {
     XBOX360,
     PS3,
     WII;

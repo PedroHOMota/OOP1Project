@@ -74,13 +74,13 @@ public interface InventoryMgmtRole {
         }
     }
 
-    private HashSet<Item> makeCopyOf(HashSet<Item> items){
-        HashSet copySet = new HashSet();
+    private Item[] makeCopyOf(HashSet<Item> items){
+        HashSet<Item> copySet = new HashSet();
 
         for(Item item : items){
             copySet.add(makeCopyOf(item));
         }
 
-        return copySet;
+        return (Item[]) copySet.toArray();
     }
 }
