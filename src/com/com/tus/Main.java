@@ -21,7 +21,7 @@ public class Main {
         DAO dao = DAOFactory.getDaoInstance();
         AdminUser admin = new AdminUser("admin","administrator","pass", UserTypesEnum.ADMIN);
         User employee = new EmployeeUser("employee","AnEmployee","pass",UserTypesEnum.EMPLOYEE);
-        User regularUser = new RegularUser("regular","AnUser","pass",UserTypesEnum.REGULAR);
+        User regularUser = new RegularUser("regular","AnUser","pass",UserTypesEnum.REGULAR, null);
         Book book = new Book("Lord of the Rings","01/01/2001",10,10,"J.R.R Tolkien",ItemTypeEnum.BOOK);
         Book book2 = new Book("King of Thorns","01/01/2001",10,10,"Mark Lawrance",ItemTypeEnum.BOOK);
         Book book3 = new Book("Sophie's World","01/01/2001",10,10,"Jostein Gaarder",ItemTypeEnum.BOOK);

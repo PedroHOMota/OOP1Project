@@ -44,6 +44,7 @@ public class RegularUser extends User implements RegularUserRole{
     public List checkOverdue(){
         final LocalDateTime now = LocalDateTime.now();
 
+        //example of explicit predicate creation and usage
         Predicate<Map.Entry<Item, LocalDateTime>> predicate = entry -> {
             return entry.getValue().compareTo(now) > 0;
         };

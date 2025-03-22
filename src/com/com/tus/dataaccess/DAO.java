@@ -25,7 +25,9 @@ public class DAO implements DAOMethods{
     private HashSet<Item> items = new HashSet<Item>();
 
     public User getUser(final String username) throws UserNotFound {
-        final User aUser = users.stream().filter(user -> user.getUsername().equals(username)).findFirst().orElseThrow(() -> new UserNotFound());
+        final User aUser = users.stream().filter(user -> user.getUsername().equals(username))
+                .findFirst()
+                .orElseThrow(UserNotFound::new);
 
         return aUser;
     }
@@ -62,19 +64,24 @@ public class DAO implements DAOMethods{
     }
 
     public Set<User> getAllUsersOfType(final Class userClass){
-        return users.stream().filter(user -> user.getClass().equals(userClass)).collect(Collectors.toSet());
+        return users.stream().filter(user -> user.getClass().equals(userClass))
+                .collect(Collectors.toSet());
     }
 
     public Set<User> getAllUsers(){
         return users;
     }
 
+    //Example of terminal operation in conjuction with intermediate operation
     public Item getItem(final String itemName, ItemTypeEnum itemType) throws ItemNotFound {
-        return  items.stream().filter(item -> item.getName().equals(itemName) && item.getItemType().equals(itemType)).findFirst().orElseThrow(() -> new ItemNotFound(itemName) );
+        return  items.stream().filter(item -> item.getName().equals(itemName) && item.getItemType().equals(itemType))
+                .findFirst()
+                .orElseThrow(() -> new ItemNotFound(itemName) );
     }
 
     public Set<Item> getAllItemsOfType(final Class itemClass){
-        return items.stream().filter(item -> item.getClass().equals(itemClass)).collect(Collectors.toSet());
+        return items.stream().filter(item -> item.getClass().equals(itemClass))
+                .collect(Collectors.toSet());
     }
 
     public Set<Item> getAllItems(){
@@ -96,10 +103,12 @@ public class DAO implements DAOMethods{
         return false;
     }
 
+    //Example of intermediate operation
     public void saveItems(final Item... items) throws ItemAlreadyExists {
         final List<Item> itemsToSave = Arrays.stream(items).filter(item -> !this.items.contains(item))
-            .map(item -> makeCopyOf(item))
+            .map(this::makeCopyOf)
             .collect(Collectors.toList());
+
         for (var item: itemsToSave) {
             this.items.add(item);
         }
@@ -119,47 +128,40 @@ public class DAO implements DAOMethods{
         }
     }
 
-
+    //Example of switch with pattern matching
     private Item makeCopyOf(Item item){
-        switch (item){
-            case Book book : {break;}
-            case Game game :{
-                break;
+        switch (item) {
+            case Book book: {
+                Book copy = new Book(item.getName(),
+                        book.getCreationDate(),
+                        book.getTotalUnits(),
+                        book.getAvailableUnits(),
+                        book.getAuthor(),
+                        book.getItemType());
+
+                return copy;
             }
-            case Cd cd:{
-                break;
+            case Game game: {
+                Game copy = new Game(
+                        game.getName(),
+                        game.getCreationDate(),
+                        game.getTotalUnits(),
+                        game.getAvailableUnits(),
+                        game.getPlatform(),
+                        game.getItemType());
+
+                return copy;
             }
-        }
-        if(item.getClass() == Book.class){
-            Book copy = new Book(item.getName(),
-                item.getCreationDate(),
-                item.getTotalUnits(),
-                item.getAvailableUnits(),
-                ((Book) item).getAuthor(),
-                item.getItemType());
+            case Cd cd: {
+                Cd copy = new Cd(item.getName(),
+                        cd.getCreationDate(),
+                        cd.getTotalUnits(),
+                        cd.getAvailableUnits(),
+                        cd.getArtist(),
+                        cd.getItemType());
 
-            return copy;
-        }
-        else if (item.getClass() == Game.class) {
-            Game copy = new Game(
-                item.getName(),
-                item.getCreationDate(),
-                item.getTotalUnits(),
-                item.getAvailableUnits(),
-                ((Game) item).getPlatform(),
-                item.getItemType());
-
-            return copy;
-        }
-        else {
-            Cd copy = new Cd(item.getName(),
-                item.getCreationDate(),
-                item.getTotalUnits(),
-                item.getAvailableUnits(),
-                ((Cd) item).getArtist(),
-                item.getItemType());
-
-            return copy;
+                return copy;
+            }
         }
     }
 

@@ -14,7 +14,6 @@ public interface EmployeeRole {
 
     DAOMethods dao = DAOFactory.getDaoInstance();
 
-    //TODO update exception
     public default void createAUser(final String username, final String name, final String password, final UserTypesEnum userType) throws
         UserAlreadyExists, NotSupportedException {
         if(userType == UserTypesEnum.ADMIN) {

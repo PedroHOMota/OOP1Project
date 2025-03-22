@@ -8,7 +8,7 @@ import com.tus.items.ItemTypeEnum;
 public final class AdminUser extends User implements AdminRole, EmployeeRole, InventoryMgmtRole, RegularUserRole{
 
     public AdminUser(final String username, final String name, final String password, final UserTypesEnum userType) {
-        super(username, name, password, userType);
+        super(username, name, password, userType, null);
     }
 
     @Override
